@@ -13,30 +13,30 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class RegisterActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    EditText registerEditEmail;
-    EditText registerEditPass;
-    EditText registerEditPass2;
-    Button registerBtn;
-    TextView registerTextLogin;
+    EditText loginEditEmail;
+    EditText loginEditPass;
+    Button loginBtn;
+    TextView loginTextRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_login);
 
-        registerTextLogin = findViewById(R.id.registerTextLogin);
+        loginTextRegister = findViewById(R.id.loginTextRegister);
 
-        // Giriş Sayfasına Gitmek İçin
-        registerTextLogin.setOnClickListener(new View.OnClickListener() {
+        // Kayıt sayfasına gitmek için
+        loginTextRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
     }
 }
