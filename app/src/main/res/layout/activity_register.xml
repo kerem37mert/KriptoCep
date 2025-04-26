@@ -5,78 +5,83 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="36dp"
     android:background="@color/dark_blue"
+    android:padding="16dp"
     tools:context=".RegisterActivity">
 
-    <TextView
-        android:id="@+id/textRegisterTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Kayıt Ol"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/editRegisterEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp" />
+        app:srcCompat="@drawable/image1_0" />
 
     <EditText
-        android:id="@+id/editRegisterEmail"
+        android:id="@+id/registerEditEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:layout_marginTop="70dp"
+        android:ems="10"
+        android:hint="Eposta"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/textRegisterTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        style="@style/editText" />
 
     <EditText
-        android:id="@+id/edtRegisterPass"
+        android:id="@+id/registerEditPass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Şifre"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Parola"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/editRegisterEmail"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerEditEmail"
+        style="@style/editText" />
 
     <EditText
-        android:id="@+id/edtRegisterPass2"
+        android:id="@+id/registerEditPass2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Şifre Tekrar"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Parola Tekrar"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/edtRegisterPass"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerEditPass"
+        style="@style/editText" />
 
     <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Hesap Oluştur"
-        app:layout_constraintTop_toBottomOf="@id/edtRegisterPass2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:background="@color/white"
-        />
-
-    <Button
-        android:id="@+id/button"
+        android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I love NIGGAS"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="40dp"
+        android:text="Hesap Oluştur"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.515" />
+        app:layout_constraintTop_toBottomOf="@+id/registerEditPass2"
+        style="@style/goBtn" />
+
+    <TextView
+        android:id="@+id/registerTextLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Giriş Yap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+        style="@style/stdText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
