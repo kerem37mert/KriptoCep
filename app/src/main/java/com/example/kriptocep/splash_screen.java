@@ -10,6 +10,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class splash_screen extends AppCompatActivity {
 
     @Override
@@ -19,9 +22,20 @@ public class splash_screen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(splash_screen.this, RegisterActivity.class);
-            startActivity(intent);
-            finish();
+            // Kullanıcıyı kontrol et
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (currentUser != null) {
+                // Eğer kullanıcı giriş yaptıysa, Ana sayfaya yönlendir
+                Intent intent = new Intent(splash_screen.this, HomeActivity.class); // Ana ekran
+                startActivity(intent);
+                finish(); // Giriş ekranını kapat
+            } else {
+                // Eğer kullanıcı giriş yapmamışsa, Giriş ekranına yönlendir
+                Intent intent = new Intent(splash_screen.this, LoginActivity.class);
+                startActivity(intent);
+                finish(); // Ana ekranı kapat
+            }
         }, 3500);
     }
 }

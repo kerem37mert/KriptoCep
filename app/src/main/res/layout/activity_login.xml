@@ -17,7 +17,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/image1_0" />
+      app:srcCompat="@drawable/img2" />
 
   <EditText
       android:id="@+id/LoginEditEmail"
