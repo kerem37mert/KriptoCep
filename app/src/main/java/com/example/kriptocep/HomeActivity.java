@@ -2,17 +2,21 @@ package com.example.kriptocep;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
     Button btn;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +25,29 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         btn = findViewById(R.id.btn);
+        bottomNavigationView = findViewById(R.id.bottom_navigation); // XML'deki BottomNavigationView
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut(); // Firebase oturumunu kapat
-                Intent intent = new Intent(HomeActivity.this, LoginActivity.class); // Giriş sayfasına yönlendir
-                startActivity(intent);
-                finish(); // Ana sayfayı kapat
+        btn.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        // BottomNavigation item seçme olayı
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    Toast.makeText(HomeActivity.this, "Ana Sayfa", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.nav_search:
+                    Toast.makeText(HomeActivity.this, "Ara", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.nav_profile:
+                    Toast.makeText(HomeActivity.this, "Profil", Toast.LENGTH_SHORT).show();
+                    return true;
             }
+            return false;
         });
     }
 }
