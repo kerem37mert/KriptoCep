@@ -2,15 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/image1_0"
+        android:icon="@drawable/home"
         android:title="Ana Sayfa" />
     <item
-        android:id="@+id/nav_search"
-        android:icon="@drawable/image1_0"
-        android:title="Ara" />
+        android:id="@+id/nav_wallet"
+        android:icon="@drawable/wallet"
+        android:title="Cüzdan" />
+    <item
+        android:id="@+id/nav_aboutus"
+        android:icon="@drawable/aboutus"
+        android:title="Hakkımızda" />
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/image1_0"
+        android:icon="@drawable/profile"
         android:title="Profil" />
 
 </menu>

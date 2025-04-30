@@ -36,16 +36,23 @@ public class HomeActivity extends AppCompatActivity {
 
         // BottomNavigation item seçme olayı
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    Toast.makeText(HomeActivity.this, "Ana Sayfa", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.nav_search:
-                    Toast.makeText(HomeActivity.this, "Ara", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.nav_profile:
-                    Toast.makeText(HomeActivity.this, "Profil", Toast.LENGTH_SHORT).show();
-                    return true;
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.nav_wallet) {
+                Intent intent2 = new Intent(HomeActivity.this, WalletActivity.class);
+                startActivity(intent2);
+                return true;
+            } else if (itemId == R.id.nav_aboutus) {
+                Intent intent3 = new Intent(HomeActivity.this, AboutUsActivity.class);
+                startActivity(intent3);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                Intent intent3 = new Intent(HomeActivity.this, ProfileActivity.class);
+                startActivity(intent3);
+                return true;
             }
             return false;
         });
