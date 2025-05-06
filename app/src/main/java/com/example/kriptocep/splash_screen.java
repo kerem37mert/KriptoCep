@@ -27,7 +27,7 @@ public class splash_screen extends AppCompatActivity {
 
             if (currentUser != null) {
                 // Eğer kullanıcı giriş yaptıysa, Ana sayfaya yönlendir
-                Intent intent = new Intent(splash_screen.this, HomeActivity.class); // Ana ekran
+                Intent intent = new Intent(splash_screen.this, MainActivity.class); // Ana ekran
                 startActivity(intent);
                 finish(); // Giriş ekranını kapat
             } else {
