@@ -1,5 +1,7 @@
 package com.example.kriptocep;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -26,6 +28,7 @@ public class HomeFragment extends Fragment {
     String baseURL = "https://api.coinlore.net/api/";
     Retrofit retrofit;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class HomeFragment extends Fragment {
         WebView webView = view.findViewById(R.id.web);
         String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bBC-nXj3Ng4?si=CuJqUT-QxCSzw7dh\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setBackgroundColor(Color.TRANSPARENT); // Beyaz arka planı kaldırır
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // Daha iyi performans
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadData(video, "text/html", "utf-8");
 
