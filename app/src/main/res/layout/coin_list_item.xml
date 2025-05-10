@@ -7,19 +7,18 @@
     android:padding="16dp">
 
     <!-- Coin İkonu -->
-
-    <!-- Coin Sembolü -->
     <ImageView
         android:id="@+id/coin_list_item_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
         android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:src="@drawable/aboutus" />
+        app:layout_constraintVertical_bias="0.652"
+        tools:srcCompat="@drawable/aboutus" />
 
+    <!-- Coin İsmi -->
     <TextView
         android:id="@+id/coin_list_item_name"
         android:layout_width="wrap_content"
@@ -30,6 +29,7 @@
         app:layout_constraintStart_toStartOf="@id/coin_list_item_symbol"
         app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
 
+    <!-- Coin Sembolü -->
     <TextView
         android:id="@+id/coin_list_item_symbol"
         android:layout_width="wrap_content"
@@ -41,14 +41,7 @@
         app:layout_constraintStart_toEndOf="@id/coin_list_item_icon"
         app:layout_constraintTop_toTopOf="@id/coin_list_item_icon" />
 
-    <!-- Coin İsmi -->
-
     <!-- Coin Fiyatı -->
-
-    <!-- Coin Değişim Yüzdesi -->
-
-    <!-- Market Cap -->
-
     <TextView
         android:id="@+id/coin_list_item_price"
         android:layout_width="wrap_content"
@@ -63,6 +56,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.263" />
 
+    <!-- Coin Değişim Yüzdesi -->
     <TextView
         android:id="@+id/coin_list_item_change_24h"
         android:layout_width="wrap_content"
@@ -77,6 +71,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.607" />
 
+
+    <!-- Market Cap -->
     <TextView
         android:id="@+id/coin_list_item_market_cap"
         android:layout_width="wrap_content"
