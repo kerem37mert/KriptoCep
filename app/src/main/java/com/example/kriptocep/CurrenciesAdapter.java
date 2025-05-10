@@ -1,9 +1,7 @@
 package com.example.kriptocep;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,24 +45,28 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull CurrenciesAdapter.ViewHolder holder, int position) {
         Currencies currency = currencies.get(position);
-        holder.coinNameTextView.setText(currency.name);
+
+        // En fazla 6 karakterlik coin adı
+        String name = currency.name;
+        if (name.length() > 8) {
+            name = name.substring(0, 8)+ "...";
+        }
+        holder.coinNameTextView.setText(name);
+
         holder.coinPriceTextView.setText(String.valueOf(currency.price_usd));
         holder.coinChangeTextView.setText(String.valueOf(currency.percent_change_24h));
         holder.coinSymbolTextView.setText(currency.symbol);
 
         try {
             String fileName = "icons/" + currency.symbol.toLowerCase() + ".png";
-
             InputStream inputStream = holder.itemView.getContext().getAssets().open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             holder.coinImageView.setImageBitmap(bitmap);
-
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
             holder.coinImageView.setImageResource(R.drawable.aboutus);
         }
-
 
         String formattedMarketCap = formatCurrency(currency.market_cap_usd);
         holder.coinMarketCapTextView.setText(formattedMarketCap);
@@ -81,12 +83,11 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         TextView coinPriceTextView;
         TextView coinChangeTextView;
         TextView coinSymbolTextView;
-
         TextView coinMarketCapTextView;
         ImageView coinImageView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             coinMarketCapTextView = itemView.findViewById(R.id.coin_list_item_market_cap);
             coinNameTextView = itemView.findViewById(R.id.coin_list_item_name);
             coinPriceTextView = itemView.findViewById(R.id.coin_list_item_price);
