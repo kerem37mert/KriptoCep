@@ -53,7 +53,7 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         holder.coinSymbolTextView.setText(currency.symbol);
 
         try {
-            String fileName = currency.symbol.toLowerCase() + ".png";
+            String fileName = "icons/" + currency.symbol.toLowerCase() + ".png";
 
             InputStream inputStream = holder.itemView.getContext().getAssets().open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
