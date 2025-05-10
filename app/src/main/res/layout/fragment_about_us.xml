@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dark_blue"
+    tools:context=".AboutUsFragment">
 
-    <!-- Başlık veya açıklama metni -->
 
-    <!-- Google Harita Fragment'i, alt 1/4 ekranı kapsayacak şekilde -->
-    <FrameLayout
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
-
-        <TextView
-            android:id="@+id/about_us_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/dark_blue"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="Kastamonu Üniversitesi MMF Fakültesi"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
-
-    </FrameLayout>
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="186dp" />
-
-</LinearLayout>
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
