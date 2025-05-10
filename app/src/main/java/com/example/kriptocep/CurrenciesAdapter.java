@@ -1,6 +1,9 @@
 package com.example.kriptocep;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.ViewHolder> {
@@ -46,6 +51,20 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         holder.coinPriceTextView.setText(String.valueOf(currency.price_usd));
         holder.coinChangeTextView.setText(String.valueOf(currency.percent_change_24h));
         holder.coinSymbolTextView.setText(currency.symbol);
+
+        try {
+            String fileName = currency.symbol.toLowerCase() + ".png";
+
+            InputStream inputStream = holder.itemView.getContext().getAssets().open(fileName);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            holder.coinImageView.setImageBitmap(bitmap);
+
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            holder.coinImageView.setImageResource(R.drawable.aboutus);
+        }
+
 
         String formattedMarketCap = formatCurrency(currency.market_cap_usd);
         holder.coinMarketCapTextView.setText(formattedMarketCap);
