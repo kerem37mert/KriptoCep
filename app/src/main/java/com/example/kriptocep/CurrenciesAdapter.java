@@ -53,18 +53,15 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         holder.coinSymbolTextView.setText(currency.symbol);
 
         try {
-            String fileName = currency.symbol.toLowerCase() + ".png";
-
+            String fileName = "icons/" + currency.symbol.toLowerCase() + ".png";
             InputStream inputStream = holder.itemView.getContext().getAssets().open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             holder.coinImageView.setImageBitmap(bitmap);
-
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
             holder.coinImageView.setImageResource(R.drawable.aboutus);
         }
-
 
         String formattedMarketCap = formatCurrency(currency.market_cap_usd);
         holder.coinMarketCapTextView.setText(formattedMarketCap);
