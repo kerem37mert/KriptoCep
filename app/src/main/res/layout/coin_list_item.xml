@@ -1,87 +1,92 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coin_list_item_market_cap"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="#3F72AF"
+    android:padding="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <!-- Coin İkonu -->
+
+    <!-- Coin Sembolü -->
+    <ImageView
+        android:id="@+id/coin_list_item_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.652"
+        tools:srcCompat="@drawable/aboutus" />
+
+    <TextView
+        android:id="@+id/coin_list_item_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_marginTop="4dp"
+        android:text="Bitcoin"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/coin_list_item_symbol"
+        app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
 
-        <!-- Coin İkonu -->
-        <ImageView
-            android:id="@+id/coin_list_item_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/aboutus" />
+    <TextView
+        android:id="@+id/coin_list_item_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="BTC"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/coin_list_item_icon"
+        app:layout_constraintTop_toTopOf="@id/coin_list_item_icon" />
 
-        <!-- Coin Sembolü -->
-        <TextView
-            android:id="@+id/coin_list_item_symbol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="BTC"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/coin_list_item_icon"
-            app:layout_constraintTop_toTopOf="@id/coin_list_item_icon" />
+    <!-- Coin İsmi -->
 
-        <!-- Coin İsmi -->
-        <TextView
-            android:id="@+id/coin_list_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Bitcoin"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@id/coin_list_item_symbol"
-            app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
+    <!-- Coin Fiyatı -->
 
-        <!-- Coin Fiyatı -->
+    <!-- Coin Değişim Yüzdesi -->
 
-        <!-- Coin Değişim Yüzdesi -->
+    <!-- Market Cap -->
 
-        <TextView
-            android:id="@+id/coin_list_item_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="105.555"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.438"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.583" />
+    <TextView
+        android:id="@+id/coin_list_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="105.555"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.263" />
 
-        <TextView
-            android:id="@+id/coin_list_item_change_24h"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:text="%55"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.413" />
+    <TextView
+        android:id="@+id/coin_list_item_change_24h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="%55"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/coin_list_item_price"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.607" />
 
-        <TextView
-            android:id="@+id/coin_list_item_market_cap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="257dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/coin_list_item_market_cap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Market Cap"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coin_list_item_price" />
 
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

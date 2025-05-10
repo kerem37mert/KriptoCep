@@ -1,6 +1,5 @@
 package com.example.kriptocep;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +7,66 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.ViewHolder> {
 
-    List<Currencies> currencies;
+    private List<Currencies> currencies;
+    private OnLoadMoreListener onLoadMoreListener;
+    private boolean isLoading = false;
+    private int visibleThreshold = 5;
+    private int lastVisibleItem, totalItemCount;
 
-    public CurrenciesAdapter(List<Currencies> currencies) {
+    public interface OnLoadMoreListener {
+        void onLoadMore();
+    }
+
+    public CurrenciesAdapter(List<Currencies> currencies, RecyclerView recyclerView) {
         this.currencies = currencies;
+
+        // RecyclerView için ScrollListener ekliyoruz.
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // Eğer sayfa sonuna geldiyseler yeni verileri yüklemeye başla
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    // Yeni verileri yüklemek için listener'ı çağır
+                    if (onLoadMoreListener != null) {
+                        onLoadMoreListener.onLoadMore();
+                    }
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    private String formatCurrency(double num) {
+        if (num >= 1000000000) {
+            return String.format("%.2fB", num / 1000000000);
+        } else if (num >= 1_000_000) {
+            return String.format("%.2fM", num / 1000000);
+        } else if (num >= 1_000) {
+            return String.format("%.2fK", num / 1000);
+        } else {
+            return String.valueOf(num);
+        }
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    public void setLoaded() {
+        isLoading = false;
     }
 
     @NonNull
@@ -36,24 +85,12 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         holder.coinSymbolTextView.setText(currency.symbol);
 
         String formattedMarketCap = formatCurrency(currency.market_cap_usd);
-        holder.coinMarketCapTextView.setText("MCap: " + formattedMarketCap);
+        holder.coinMarketCapTextView.setText(formattedMarketCap);
     }
 
     @Override
     public int getItemCount() {
         return currencies != null ? currencies.size() : 0;
-    }
-
-    private String formatCurrency(double num) {
-        if (num >= 1000000000) {
-            return String.format("%.2fB", num / 1000000000);
-        } else if (num >= 1_000_000) {
-            return String.format("%.2fM", num / 1000000);
-        } else if (num >= 1_000) {
-            return String.format("%.2fK", num / 1000);
-        } else {
-            return String.valueOf(num);
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -62,9 +99,9 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         TextView coinPriceTextView;
         TextView coinChangeTextView;
         TextView coinSymbolTextView;
-
         TextView coinMarketCapTextView;
         ImageView coinImageView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
