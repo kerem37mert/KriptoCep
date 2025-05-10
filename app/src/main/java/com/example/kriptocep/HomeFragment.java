@@ -4,7 +4,11 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +32,31 @@ public class HomeFragment extends Fragment {
     ArrayList<Currencies> currencyModel;
     String baseURL = "https://api.coinlore.net/api/";
     Retrofit retrofit;
+    RecyclerView recyclerViewCoinList;
+    ProgressBar progressCoinList;
+    LinearLayoutManager linearLayoutManager;
+    CurrenciesAdapter currenciesAdapter;
+    List<Currencies> currencies;
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
 
-        // Inflate the layout for this fragment first
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        currencies = new ArrayList<>();
+
+        recyclerViewCoinList = view.findViewById(R.id.recyclerViewCoinList);
+        progressCoinList = view.findViewById(R.id.progressCoinList);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewCoinList.setLayoutManager(linearLayoutManager);
+        currenciesAdapter = new CurrenciesAdapter(currencies);
+        recyclerViewCoinList.setAdapter(currenciesAdapter);
 
         // WebView kullanrak youtube video gösterme
         WebView webView = view.findViewById(R.id.web);
@@ -44,6 +66,14 @@ public class HomeFragment extends Fragment {
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // Daha iyi performans
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadData(video, "text/html", "utf-8");
+
+        fetchCurrencies();
+
+
+    }
+
+    public void fetchCurrencies() {
+        progressCoinList.setVisibility(View.VISIBLE);
 
         // Retrofit kurulumu
         retrofit = new Retrofit.Builder()
@@ -58,10 +88,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    currencyModel = new ArrayList<>(response.body());
-                    for (Currencies currency : currencyModel) {
-                        Log.d("Currency", "Name: " + currency.name + ", Price: " + currency.price_usd);
-                    }
+                    currencies.addAll(new ArrayList<>(response.body()));
+                    currenciesAdapter.notifyDataSetChanged();
+                    progressCoinList.setVisibility(View.GONE);
                 }
             }
 
@@ -70,7 +99,5 @@ public class HomeFragment extends Fragment {
                 Log.e("API Error", t.getMessage());
             }
         });
-
-        return view;
     }
 }
