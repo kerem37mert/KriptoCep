@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/coinListItem">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,8 +46,6 @@
             app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
 
         <!-- Coin Fiyatı -->
-
-        <!-- 24 saatlik değişim -->
         <TextView
             android:id="@+id/coin_list_item_price"
             android:layout_width="wrap_content"
@@ -62,6 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/coin_list_item_symbol" />
 
+        <!-- Coin Değişim Yüzdesi -->
         <TextView
             android:id="@+id/coin_list_item_change_24h"
             android:layout_width="wrap_content"
@@ -71,6 +68,5 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/coin_list_item_price" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

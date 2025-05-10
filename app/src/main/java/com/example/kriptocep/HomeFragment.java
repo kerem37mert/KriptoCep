@@ -88,9 +88,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API DATA", "Veri alındı: " + response.body().size());
                     currencies.addAll(new ArrayList<>(response.body()));
                     currenciesAdapter.notifyDataSetChanged();
                     progressCoinList.setVisibility(View.GONE);
+                } else {
+                    Log.e("API ERROR", "Başarısız yanıt ya da boş veri.");
                 }
             }
 

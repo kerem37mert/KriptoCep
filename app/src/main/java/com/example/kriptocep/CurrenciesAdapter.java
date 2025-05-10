@@ -37,7 +37,7 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return currencies != null ? currencies.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
