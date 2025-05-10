@@ -97,3 +97,4 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         }
     }
 }
+//c
