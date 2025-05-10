@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment first
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Now find the WebView using the inflated view
+        // WebView kullanrak youtube video gösterme
         WebView webView = view.findViewById(R.id.web);
         String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bBC-nXj3Ng4?si=CuJqUT-QxCSzw7dh\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
         webView.getSettings().setJavaScriptEnabled(true);
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadData(video, "text/html", "utf-8");
 
-        // Retrofit setup
+        // Retrofit kurulumu
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
