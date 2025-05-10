@@ -25,6 +25,7 @@ public class Currencies {
     public double price_btc;
     @SerializedName("market_cap_usd")
     public double market_cap_usd;
+
     @SerializedName("volume24")
     public double volume24;
     @SerializedName("volume24a")
