@@ -1,5 +1,7 @@
 package com.example.kriptocep;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -17,10 +19,12 @@ import java.util.List;
 
 public class SelectCoinAdapter extends RecyclerView.Adapter<SelectCoinAdapter.ViewHolder> {
 
+    Context context;
     List<Currencies> currencies;
 
-    public SelectCoinAdapter(List<Currencies> currencies) {
+    public SelectCoinAdapter(Context context, List<Currencies> currencies) {
         this.currencies = currencies;
+        this.context = context;
     }
 
     // Arama işleminde listeyi güncellemek için
@@ -54,6 +58,20 @@ public class SelectCoinAdapter extends RecyclerView.Adapter<SelectCoinAdapter.Vi
             e.printStackTrace();
             holder.selectCoinItemIcon.setImageResource(R.drawable.aboutus);
         }
+
+        // İtemlere Tıklama
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TransactionActivity.class);
+                intent.putExtra("id", currency.id);
+                intent.putExtra("name", currency.name);
+                intent.putExtra("symbol", currency.symbol);
+
+                context.startActivity(intent);
+                ((SelectCoinActivity) context).finish();
+            }
+        });
     }
 
     @Override

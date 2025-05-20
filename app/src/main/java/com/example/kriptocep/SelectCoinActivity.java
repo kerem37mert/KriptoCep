@@ -58,7 +58,7 @@ public class SelectCoinActivity extends AppCompatActivity {
         progressSelectCoin = findViewById(R.id.progressSelectCoin);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewSelectCoin.setLayoutManager(linearLayoutManager);
-        selectCoinAdapter = new SelectCoinAdapter(currencies);
+        selectCoinAdapter = new SelectCoinAdapter(this, currencies);
         recyclerViewSelectCoin.setAdapter(selectCoinAdapter);
 
         progressSelectCoin.setVisibility(View.GONE);

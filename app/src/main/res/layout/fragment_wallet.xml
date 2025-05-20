@@ -39,20 +39,20 @@
                 android:id="@+id/totalBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="₺45,200"
+                android:layout_marginTop="4dp"
+                android:text="569,699.45$"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:textSize="24sp"
-                android:layout_marginTop="4dp" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/netProfit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+₺3,200"
+                android:layout_marginTop="8dp"
+                android:text="+3,200$"
                 android:textColor="@color/green"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp" />
+                android:textSize="18sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
