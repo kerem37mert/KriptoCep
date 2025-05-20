@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
 
     // Handler ve Runnable tanımı
     Handler handler = new Handler();
-    final int FETCH_INTERVAL = 20000; // 20 saniye
+    final int FETCH_INTERVAL = 30000; // 30 saniye
     final Runnable fetchRunnable = new Runnable() {
         @Override
         public void run() {
