@@ -3,13 +3,12 @@ package com.example.kriptocep;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-
+import android.os.Handler; // ✅
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,8 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +34,17 @@ public class HomeFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     CurrenciesAdapter currenciesAdapter;
     List<Currencies> currencies;
+
+    // Handler ve Runnable tanımı
+    Handler handler = new Handler();
+    final int FETCH_INTERVAL = 30000; // 30 saniye
+    final Runnable fetchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            fetchCurrencies(false);
+            handler.postDelayed(this, FETCH_INTERVAL); // tekrar çalıştır
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,24 +66,27 @@ public class HomeFragment extends Fragment {
         currenciesAdapter = new CurrenciesAdapter(currencies);
         recyclerViewCoinList.setAdapter(currenciesAdapter);
 
-        // WebView kullanrak youtube video gösterme
+        // WebView ile video gösterimi
         WebView webView = view.findViewById(R.id.web);
         String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bBC-nXj3Ng4?si=CuJqUT-QxCSzw7dh\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setBackgroundColor(Color.TRANSPARENT); // Beyaz arka planı kaldırır
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); // Daha iyi performans
+        webView.setBackgroundColor(Color.TRANSPARENT);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadData(video, "text/html", "utf-8");
 
-        fetchCurrencies();
+        progressCoinList.setVisibility(View.VISIBLE); // progressbarı göster
+        fetchCurrencies(true);
 
-
+        //Periyodik yenileme başlatılıyor
+        handler.post(fetchRunnable);
     }
 
-    public void fetchCurrencies() {
-        progressCoinList.setVisibility(View.VISIBLE);
+    public void fetchCurrencies(boolean showProgress) {
+        if (showProgress) {
+            progressCoinList.setVisibility(View.VISIBLE);
+        }
 
-        // Retrofit kurulumu
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -89,18 +100,32 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("API DATA", "Veri alındı: " + response.body().size());
+                    currencies.clear();
                     currencies.addAll(new ArrayList<>(response.body()));
                     currenciesAdapter.notifyDataSetChanged();
-                    progressCoinList.setVisibility(View.GONE);
                 } else {
                     Log.e("API ERROR", "Başarısız yanıt ya da boş veri.");
                 }
+
+                if (showProgress)
+                    progressCoinList.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<List<Currencies>> call, Throwable t) {
                 Log.e("API Error", t.getMessage());
+
+                if (showProgress)
+                    progressCoinList.setVisibility(View.GONE);
             }
         });
+    }
+
+
+    // Handler durdurme
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacks(fetchRunnable);
     }
 }
