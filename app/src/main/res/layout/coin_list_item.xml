@@ -22,7 +22,7 @@
     <!-- Coin İsmi -->
     <TextView
         android:id="@+id/coin_list_item_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Bitcoin"

@@ -8,11 +8,46 @@
     tools:context=".AboutUsFragment">
 
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+    <Button
+        android:id="@+id/adresBtn"
+        android:layout_width="413dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="484dp"
+        android:text="  Adres"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/hakkimizdaBtn"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/hakkimizdaBtn"
+        android:layout_width="413dp"
+        android:layout_height="69dp"
+        android:layout_marginBottom="560dp"
+        android:text="  Hakkımızda"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/iletisimBtn"
+        android:layout_width="413dp"
+        android:layout_height="69dp"
+        android:layout_marginBottom="632dp"
+        android:text="  İletişim Bilgilerimiz"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
