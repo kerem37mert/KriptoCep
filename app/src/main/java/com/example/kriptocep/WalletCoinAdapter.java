@@ -50,10 +50,11 @@ public class WalletCoinAdapter extends RecyclerView.Adapter<WalletCoinAdapter.Vi
         }
 
         // Profit
-        holder.walletCoinItemProfit.setText(String.format("%.2f$", item.profit));
         if(item.profit >= 0) {
+            holder.walletCoinItemProfit.setText(String.format("+%.2f$", item.profit));
             holder.walletCoinItemProfit.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.green));
         } else {
+            holder.walletCoinItemProfit.setText(String.format("%.2f$", item.profit));
             holder.walletCoinItemProfit.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.red));
         }
     }

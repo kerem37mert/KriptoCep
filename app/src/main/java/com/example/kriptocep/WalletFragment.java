@@ -39,6 +39,9 @@ public class WalletFragment extends Fragment {
     Button transactionBtn;
     TextView totalBalance;
     TextView netProfit;
+    TextView textViewNotFound;
+    TextView textViewCurrencyName;
+    TextView textViewValue;
     Retrofit retrofit;
     String baseURL = "https://api.coinlore.net/api/";
     RecyclerView recyclerViewWalletCoin;
@@ -83,6 +86,9 @@ public class WalletFragment extends Fragment {
         transactionBtn = view.findViewById(R.id.transactionBtn);
         totalBalance = view.findViewById(R.id.totalBalance);
         netProfit = view.findViewById(R.id.netProfit);
+        textViewNotFound = view.findViewById(R.id.textViewNotFound);
+        textViewCurrencyName = view.findViewById(R.id.textViewCurrencyName);
+        textViewValue = view.findViewById(R.id.textViewValue);
 
         recyclerViewWalletCoin = view.findViewById(R.id.recyclerViewWalletCoin);
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -109,6 +115,19 @@ public class WalletFragment extends Fragment {
                 .collection("transactions")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        // Hiç işlem yok: kullanıcı cüzdanına hiç varlık eklememiş
+                        textViewNotFound.setVisibility(View.VISIBLE);
+                        textViewCurrencyName.setVisibility(View.GONE);
+                        textViewValue.setVisibility(View.GONE);
+                        return;
+                    }
+
+                    textViewNotFound.setVisibility(View.GONE);
+                    textViewCurrencyName.setVisibility(View.VISIBLE);
+                    textViewValue.setVisibility(View.VISIBLE);
+
                     for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                         int coinID = doc.getLong("coinID").intValue();
                         String type = doc.getString("type");
@@ -197,15 +216,17 @@ public class WalletFragment extends Fragment {
                     // Tüm coin verileri alındıysa ekrana yaz
                     if (apiResponsesReceived == coinTransactionMap.size()) {
 
+                        // Uygulamanın çökmesini önelemek için
                         if (!isAdded() || getActivity() == null || getView() == null) {
                             return;
                         }
 
                         totalBalance.setText(String.format("%.2f$", totalWalletValue));
-                        netProfit.setText(String.format("%.2f$", totalProfit));
                         if (totalProfit >= 0) {
+                            netProfit.setText(String.format("+%.2f$", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.green));
                         } else {
+                            netProfit.setText(String.format("%.2f$", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.red));
                         }
                         walletCoinAdapter.notifyDataSetChanged();

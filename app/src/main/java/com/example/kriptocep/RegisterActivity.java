@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // En az bir harf, bir rakam ve bir özel karakter içermesi gerekmekte
-        String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[.,@#$!%*?&])[A-Za-z\\d.,@#$!%*?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);
 
