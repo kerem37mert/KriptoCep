@@ -1,7 +1,5 @@
 package com.example.kriptocep;
 
-import static java.security.AccessController.getContext;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,9 +12,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +29,6 @@ public class SelectCoinActivity extends AppCompatActivity {
     EditText editTextCoinSearch;
     TextView textViewNoResult;
     Retrofit retrofit;
-    ArrayList<Currencies> currencyModel;
     String baseURL = "https://api.coinlore.net/api/";
     RecyclerView recyclerViewSelectCoin;
     ProgressBar progressSelectCoin;
@@ -54,7 +48,7 @@ public class SelectCoinActivity extends AppCompatActivity {
 
         currencies = new ArrayList<>();
 
-        recyclerViewSelectCoin = findViewById(R.id.recyclerViewSelectCoin);
+        recyclerViewSelectCoin = findViewById(R.id.recyclerViewWalletCoin);
         progressSelectCoin = findViewById(R.id.progressSelectCoin);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewSelectCoin.setLayoutManager(linearLayoutManager);

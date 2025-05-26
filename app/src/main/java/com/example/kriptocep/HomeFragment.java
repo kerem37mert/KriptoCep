@@ -26,7 +26,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
 
-    ArrayList<Currencies> currencyModel;
     String baseURL = "https://api.coinlore.net/api/";
     Retrofit retrofit;
     RecyclerView recyclerViewCoinList;

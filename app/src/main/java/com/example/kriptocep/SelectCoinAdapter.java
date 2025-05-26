@@ -67,6 +67,7 @@ public class SelectCoinAdapter extends RecyclerView.Adapter<SelectCoinAdapter.Vi
                 intent.putExtra("id", currency.id);
                 intent.putExtra("name", currency.name);
                 intent.putExtra("symbol", currency.symbol);
+                intent.putExtra("price", currency.price_usd);
 
                 context.startActivity(intent);
                 ((SelectCoinActivity) context).finish();
