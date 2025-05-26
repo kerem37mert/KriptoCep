@@ -196,6 +196,11 @@ public class WalletFragment extends Fragment {
 
                     // Tüm coin verileri alındıysa ekrana yaz
                     if (apiResponsesReceived == coinTransactionMap.size()) {
+
+                        if (!isAdded() || getActivity() == null || getView() == null) {
+                            return;
+                        }
+
                         totalBalance.setText(String.format("%.2f$", totalWalletValue));
                         netProfit.setText(String.format("%.2f$", totalProfit));
                         if (totalProfit >= 0) {
