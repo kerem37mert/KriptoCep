@@ -1,5 +1,7 @@
 package com.example.kriptocep;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import java.util.List;
 
 public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.ViewHolder> {
 
+    Context context;
     List<Currencies> currencies;
 
     private String formatCurrency(double num) {
@@ -33,8 +36,9 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         }
     }
 
-    public CurrenciesAdapter(List<Currencies> currencies) {
+    public CurrenciesAdapter(Context context, List<Currencies> currencies) {
         this.currencies = currencies;
+        this.context = context;
     }
 
     @NonNull
@@ -83,6 +87,17 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
             holder.coinChangeTextView.setTextColor(holder.itemView.getResources().getColor(R.color.red));
         else
             holder.coinChangeTextView.setTextColor(holder.itemView.getResources().getColor(R.color.white));
+
+
+        // Coinlere Tıklama
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChartActivity.class);
+                intent.putExtra("symbol", currency.symbol);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

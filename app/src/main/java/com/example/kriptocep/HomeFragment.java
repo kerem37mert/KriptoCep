@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
         progressCoinList = view.findViewById(R.id.progressCoinList);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewCoinList.setLayoutManager(linearLayoutManager);
-        currenciesAdapter = new CurrenciesAdapter(currencies);
+        currenciesAdapter = new CurrenciesAdapter(getContext(), currencies);
         recyclerViewCoinList.setAdapter(currenciesAdapter);
 
         // WebView ile video gösterimi
