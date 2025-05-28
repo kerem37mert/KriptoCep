@@ -29,7 +29,7 @@ public class ChartActivity extends AppCompatActivity {
 
         String symbol = getIntent().getStringExtra("symbol");
         if (symbol == null) symbol = "BTC"; // Yedek
-        String usdSymbol = "BINANCE:" + symbol.toUpperCase() + "USD";
+        String usdSymbol = "BINANCE:" + symbol.toUpperCase() + "USDT";
         if(symbol.equals("USDT"))
             usdSymbol = "COINBASE:" + symbol.toUpperCase() + "USD";
         if(symbol.equals("USDC"))
