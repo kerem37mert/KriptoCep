@@ -221,12 +221,12 @@ public class WalletFragment extends Fragment {
                             return;
                         }
 
-                        totalBalance.setText(String.format("%.2f$", totalWalletValue));
+                        totalBalance.setText(String.format("$%.2f", totalWalletValue));
                         if (totalProfit >= 0) {
-                            netProfit.setText(String.format("+%.2f$", totalProfit));
+                            netProfit.setText(String.format("+$%.2f", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.green));
                         } else {
-                            netProfit.setText(String.format("%.2f$", totalProfit));
+                            netProfit.setText(String.format("$%.2f", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.red));
                         }
                         walletCoinAdapter.notifyDataSetChanged();

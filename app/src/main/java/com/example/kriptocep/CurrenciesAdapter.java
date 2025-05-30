@@ -59,7 +59,7 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
         }
         holder.coinNameTextView.setText(name);
 
-        holder.coinPriceTextView.setText(String.valueOf(currency.price_usd) + "$");
+        holder.coinPriceTextView.setText("$" + String.valueOf(currency.price_usd));
         holder.coinSymbolTextView.setText(currency.symbol);
 
         // İkonlar
@@ -76,7 +76,7 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
 
         // Market Değeri
         String formattedMarketCap = formatCurrency(currency.market_cap_usd);
-        holder.coinMarketCapTextView.setText(formattedMarketCap + "$");
+        holder.coinMarketCapTextView.setText("$" + formattedMarketCap);
 
         // Günlük Değişim
         holder.coinChangeTextView.setText(String.valueOf(currency.percent_change_24h) + "%");

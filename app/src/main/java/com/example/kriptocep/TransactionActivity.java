@@ -73,7 +73,7 @@ public class TransactionActivity extends AppCompatActivity {
 
         // Edittext placeholderları dinamik şekilde değiştirme
         editTransactionAmount.setHint("Adet (" + intent.getStringExtra("symbol") + ")");
-        editTransactionPrice.setHint("Fiyat: (" + intent.getDoubleExtra("price", 0) + "$)");
+        editTransactionPrice.setHint("Fiyat: ($" + intent.getDoubleExtra("price", 0) + ")");
 
         // Varsayılan Değer
         editTransactionPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {

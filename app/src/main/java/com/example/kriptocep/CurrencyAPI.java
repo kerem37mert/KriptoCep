@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface CurrencyAPI {
-    @GET(" ticker/")
+    @GET("ticker/")
     Call<List<Currencies>> getCurrency(@Query("id") int id);
 }

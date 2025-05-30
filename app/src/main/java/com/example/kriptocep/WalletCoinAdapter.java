@@ -35,7 +35,7 @@ public class WalletCoinAdapter extends RecyclerView.Adapter<WalletCoinAdapter.Vi
         WalletCoinItem item = walletList.get(position);
 
         holder.walletCoinItemSymbol.setText(item.coinSymbol);
-        holder.walletCoinItemValue.setText(String.format("%.2f $", item.currentValue));
+        holder.walletCoinItemValue.setText(String.format("$%.2f", item.currentValue));
 
         //İkonlar
         try {

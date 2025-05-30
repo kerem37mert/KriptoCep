@@ -3,83 +3,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#3F72AF"
-    android:padding="16dp">
+    android:background="@color/dark_blue"
+    android:padding="12dp">
 
-    <!-- Coin İkonu -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="150dp" />
+
     <ImageView
         android:id="@+id/coin_list_item_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.652"
         tools:srcCompat="@drawable/aboutus" />
 
-    <!-- Coin İsmi -->
-    <TextView
-        android:id="@+id/coin_list_item_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Bitcoin"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@id/coin_list_item_symbol"
-        app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
-
-    <!-- Coin Sembolü -->
     <TextView
         android:id="@+id/coin_list_item_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:text="BTC"
-        android:textSize="17sp"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintStart_toEndOf="@id/coin_list_item_icon"
         app:layout_constraintTop_toTopOf="@id/coin_list_item_icon" />
 
-    <!-- Coin Fiyatı -->
     <TextView
-        android:id="@+id/coin_list_item_price"
+        android:id="@+id/coin_list_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="105.555"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/coin_list_item_change_24h"
-        app:layout_constraintStart_toEndOf="@+id/coin_list_item_symbol"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
+        android:layout_marginStart="12dp"
+        android:text="Bitcoin"
+        android:textSize="14sp"
+        android:textColor="#E0E0E0"
+        android:fontFamily="sans-serif"
+        app:layout_constraintStart_toEndOf="@id/coin_list_item_icon"
+        app:layout_constraintTop_toBottomOf="@id/coin_list_item_symbol" />
 
-    <!-- Coin Değişim Yüzdesi -->
+    <TextView
+        android:id="@+id/coin_list_item_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="$105.55"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        app:layout_constraintTop_toTopOf="@id/coin_list_item_symbol"
+        app:layout_constraintStart_toStartOf="@id/guideline_price"
+        app:layout_constraintEnd_toStartOf="@id/coin_list_item_change_24h" />
+
+    <TextView
+        android:id="@+id/coin_list_item_market_cap"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Market Cap: $1.2B"
+        android:textColor="#B0BEC5"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif"
+        app:layout_constraintTop_toBottomOf="@id/coin_list_item_price"
+        app:layout_constraintStart_toStartOf="@id/guideline_price"
+        app:layout_constraintEnd_toStartOf="@id/coin_list_item_change_24h" />
+
     <TextView
         android:id="@+id/coin_list_item_change_24h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="%55"
-        android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="+5.25%"
+        android:textColor="#00FF7F"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.607" />
-
-
-    <!-- Market Cap -->
-    <TextView
-        android:id="@+id/coin_list_item_market_cap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="Market Cap"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/coin_list_item_price"
-        app:layout_constraintStart_toStartOf="@+id/coin_list_item_price"
-        app:layout_constraintTop_toBottomOf="@+id/coin_list_item_price" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -33,6 +35,9 @@ public class HomeFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     CurrenciesAdapter currenciesAdapter;
     List<Currencies> currencies;
+    TextView totalMC;
+    TextView totalVol;
+    TextView btcDom;
 
     // Handler ve Runnable tanımı
     Handler handler = new Handler();
@@ -65,6 +70,10 @@ public class HomeFragment extends Fragment {
         currenciesAdapter = new CurrenciesAdapter(getContext(), currencies);
         recyclerViewCoinList.setAdapter(currenciesAdapter);
 
+        totalMC = view.findViewById(R.id.totalMC);
+        totalVol = view.findViewById(R.id.totalVOl);
+        btcDom = view.findViewById(R.id.btcDom);
+
         // WebView ile video gösterimi
         WebView webView = view.findViewById(R.id.web);
         String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/bBC-nXj3Ng4?si=CuJqUT-QxCSzw7dh\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
@@ -76,6 +85,7 @@ public class HomeFragment extends Fragment {
 
         progressCoinList.setVisibility(View.VISIBLE); // progressbarı göster
         fetchCurrencies(true);
+        fetchGlobalData();
 
         //Periyodik yenileme başlatılıyor
         handler.post(fetchRunnable);
@@ -120,11 +130,56 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
-    // Handler durdurme
+    // Handler durdurma
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacks(fetchRunnable);
+    }
+
+
+    // Global Veriler
+    public void fetchGlobalData() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GlobalDataAPI globalDataAPI = retrofit.create(GlobalDataAPI.class);
+        Call<List<GlobalData>> call = globalDataAPI.getGlobalData();
+
+        call.enqueue(new Callback<List<GlobalData>>() {
+            @Override
+            public void onResponse(Call<List<GlobalData>> call, Response<List<GlobalData>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API DATA", "Veri alındı: " + response.body().size());
+                    totalMC.setText("$" + formatCurrency(response.body().get(0).total_mcap));
+                    totalVol.setText("$" + formatCurrency(response.body().get(0).total_volume));
+                    btcDom.setText(String.valueOf(response.body().get(0).btc_d) + "%");
+
+                } else {
+                    Log.e("API ERROR", "Başarısız yanıt ya da boş veri.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GlobalData>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private String formatCurrency(double num) {
+        if (num >= 1_000_000_000_000.0) {
+            return String.format("%.2fT", num / 1_000_000_000_000.0);
+        } else if (num >= 1_000_000_000.0) {
+            return String.format("%.2fB", num / 1_000_000_000.0);
+        } else if (num >= 1_000_000.0) {
+            return String.format("%.2fM", num / 1_000_000.0);
+        } else if (num >= 1_000.0) {
+            return String.format("%.2fK", num / 1_000.0);
+        } else {
+            return String.format("%.2f", num);
+        }
     }
 }
