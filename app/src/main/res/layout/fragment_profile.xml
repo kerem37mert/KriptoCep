@@ -54,7 +54,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/profile_button"
-        android:text="Şifre Değiştir"
+        android:text="Parola Değiştir"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15dp"

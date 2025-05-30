@@ -64,6 +64,14 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        btnChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EditPassActivity.class);
+                startActivity(intent);
+            }
+        });
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

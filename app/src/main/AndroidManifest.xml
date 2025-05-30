@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Kriptocep"
         tools:targetApi="31">
         <activity
+            android:name=".EditPassActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
