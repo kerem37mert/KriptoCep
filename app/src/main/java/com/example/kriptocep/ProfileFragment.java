@@ -23,9 +23,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileFragment extends Fragment {
 
+    FirebaseAuth auth;
+    FirebaseFirestore db;
+    String uid;
     Button btnEditProfile;
     Button btnChangePass;
     Button btnLogout;
@@ -42,10 +46,23 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        uid = auth.getCurrentUser().getUid();
+
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
         btnChangePass = view.findViewById(R.id.btnChangePass);
         btnLogout = view.findViewById(R.id.btnLogout);
         textViewUserName = view.findViewById(R.id.textViewUserName);
+
+
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,5 +76,24 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        getUserInfo();
+    }
+
+    public void getUserInfo() {
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+
+                        if(name == null) {
+                            textViewUserName.setText("İsimsiz Kullanıcı");
+                        } else {
+                            textViewUserName.setText(name);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> e.printStackTrace());
     }
 }
