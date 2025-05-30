@@ -1,5 +1,6 @@
 package com.example.kriptocep;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +61,32 @@ public class EditProfileActivity extends AppCompatActivity {
         toolbarEditProfile.setNavigationOnClickListener(v -> finish());
 
         getSupportActionBar().setDisplayShowTitleEnabled(false); // Uygulama ismini toolbarda gizleme
+
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Şu anki tarihi al (başlangıç için)
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                // DatePicker dialogunu oluştur
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        EditProfileActivity.this,
+                        (view, selectedYear, selectedMonth, selectedDay) -> {
+                            // Tarih seçildiğinde EditText'e yaz
+                            // Not: Aylar 0'dan başlar, bu yüzden +1 yapıyoruz
+                            String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                            editTextDate.setText(selectedDate);
+                        },
+                        year, month, day
+                );
+
+                // DatePicker'ı göster
+                datePickerDialog.show();
+            }
+        });
 
         btnProfileUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
