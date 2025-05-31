@@ -115,6 +115,7 @@ public class WalletFragment extends Fragment {
     }
 
     public void getTransactions() {
+        coinTransactionMap.clear();
         db.collection("users")
                 .document(uid)
                 .collection("transactions")
@@ -158,6 +159,9 @@ public class WalletFragment extends Fragment {
         totalProfit = 0.0;
         apiResponsesReceived = 0;
 
+        walletList.clear(); // 🔥 Listeyi temizle
+        walletCoinAdapter.notifyDataSetChanged(); // Adapter'a bildir
+
         for (Map.Entry<Integer, List<Transaction>> entry : coinTransactionMap.entrySet()) {
             int coinID = entry.getKey();
             List<Transaction> transactions = entry.getValue();
@@ -165,6 +169,7 @@ public class WalletFragment extends Fragment {
             fetchCurrencyWithCallback(coinID, transactions);
         }
     }
+
 
     public void fetchCurrencyWithCallback(int coinID, List<Transaction> transactions) {
         if (retrofit == null) {
@@ -199,8 +204,15 @@ public class WalletFragment extends Fragment {
                         }
                     }
 
-                    double currentValue = netAmount * currency.price_usd;
-                    double profit = (totalSellRevenue + currentValue) - totalBuyCost;
+                    // 🔧 Değişiklik burada başlıyor
+                    double currentValue = netAmount > 0 ? netAmount * currency.price_usd : 0.0;
+
+                    double profit;
+                    if (netAmount <= 0) {
+                        profit = totalSellRevenue - totalBuyCost;
+                    } else {
+                        profit = (totalSellRevenue + currentValue) - totalBuyCost;
+                    }
 
                     totalWalletValue += currentValue;
                     totalProfit += profit;
@@ -218,10 +230,7 @@ public class WalletFragment extends Fragment {
 
                     apiResponsesReceived++;
 
-                    // Tüm coin verileri alındıysa ekrana yaz
                     if (apiResponsesReceived == coinTransactionMap.size()) {
-
-                        // Uygulamanın çökmesini önelemek için
                         if (!isAdded() || getActivity() == null || getView() == null) {
                             return;
                         }

@@ -15,9 +15,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class TransactionActivity extends AppCompatActivity {
+
     Intent intent;
     Toolbar toolbarTransaction;
     TextView toolbarTransactionTitle;
@@ -39,6 +43,8 @@ public class TransactionActivity extends AppCompatActivity {
     EditText editTransactionPrice;
     Button addTransactionBtn;
     TabLayout tabLayout;
+
+    int coinID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +63,11 @@ public class TransactionActivity extends AppCompatActivity {
         addTransactionBtn = findViewById(R.id.addTransactionBtn);
         tabLayout = findViewById(R.id.tabLayout);
 
+        coinID = intent.getIntExtra("id", 0); // BURADA SADECE BİR KERE TANIMLA
+        fetchUpdatedPrice(coinID); // Şimdi çağırılabilir çünkü artık ayrı metot
+
         toolbarTransactionTitle.setText(intent.getStringExtra("symbol"));
 
-        // İkon
         try {
             String fileName = "icons/" + intent.getStringExtra("symbol").toLowerCase() + ".png";
             InputStream inputStream = getAssets().open(fileName);
@@ -71,82 +79,126 @@ public class TransactionActivity extends AppCompatActivity {
             toolbarTransactionIcon.setImageResource(R.drawable.aboutus);
         }
 
-        // Edittext placeholderları dinamik şekilde değiştirme
         editTransactionAmount.setHint("Adet (" + intent.getStringExtra("symbol") + ")");
         editTransactionPrice.setHint("Fiyat: ($" + intent.getDoubleExtra("price", 0) + ")");
-
-        // Varsayılan Değer
-        editTransactionPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && TextUtils.isEmpty(editTransactionPrice.getText()))
-                    editTransactionPrice.setText(String.valueOf(intent.getDoubleExtra("price", 0)));
-            }
+        editTransactionPrice.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && TextUtils.isEmpty(editTransactionPrice.getText()))
+                editTransactionPrice.setText(String.valueOf(intent.getDoubleExtra("price", 0)));
         });
 
-
-        // Toolbar Geri Tuşu
         setSupportActionBar(toolbarTransaction);
         toolbarTransaction.setNavigationOnClickListener(v -> finish());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false); // Uygulama ismini toolbarda gizleme
-
-        // Toolbar Değiştirme Butonu
-        toolbarChangeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TransactionActivity.this, SelectCoinActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        toolbarChangeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(TransactionActivity.this, SelectCoinActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        //İşlem Ekleme
-        addTransactionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amountStr = editTransactionAmount.getText().toString().trim();
-                String priceStr = editTransactionPrice.getText().toString().trim();
+        addTransactionBtn.setOnClickListener(v -> {
+            String amountStr = editTransactionAmount.getText().toString().trim();
+            String priceStr = editTransactionPrice.getText().toString().trim();
 
-                if (amountStr.isEmpty() || priceStr.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (amountStr.isEmpty() || priceStr.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                double amount = Double.parseDouble(amountStr);
-                double price = Double.parseDouble(priceStr);
+            double amount = Double.parseDouble(amountStr);
+            double price = Double.parseDouble(priceStr);
 
-                // Seçilem Tab (Buy/Sell)
-                String transactionType;
-                TabLayout.Tab selectedTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
-                int position = selectedTab.getPosition();
-                transactionType = position == 0 ? "buy" : "sell"; // İşlem tipi
+            TabLayout.Tab selectedTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+            String transactionType = selectedTab.getPosition() == 0 ? "buy" : "sell";
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String uid = auth.getCurrentUser().getUid();
 
-                // Kullanıcı idsi
-                String uid = auth.getCurrentUser().getUid();
-
-                Map<String, Object> transaction = new HashMap<>();
-                transaction.put("coinID", intent.getIntExtra("id", 0));
-                transaction.put("type", transactionType);
-                transaction.put("amount", amount);
-                transaction.put("price", price);
-                transaction.put("timestamp", System.currentTimeMillis());
-
-                // Firestore'a kaydetme
+            if (transactionType.equals("sell")) {
                 db.collection("users")
                         .document(uid)
                         .collection("transactions")
-                        .add(transaction)
-                        .addOnSuccessListener(documentReference -> {
-                            Toast.makeText(TransactionActivity.this, "İşlem başarıyla eklendi", Toast.LENGTH_SHORT).show();
+                        .whereEqualTo("coinID", coinID)
+                        .get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            double netAmount = 0.0;
+                            for (var doc : queryDocumentSnapshots.getDocuments()) {
+                                String type = doc.getString("type");
+                                double amt = doc.getDouble("amount");
+
+                                if (type.equals("buy")) {
+                                    netAmount += amt;
+                                } else if (type.equals("sell")) {
+                                    netAmount -= amt;
+                                }
+                            }
+
+                            if (amount > netAmount) {
+                                Toast.makeText(TransactionActivity.this, "Elinizde yeterli miktarda coin yok", Toast.LENGTH_SHORT).show();
+                            } else {
+                                saveTransaction(db, uid, coinID, transactionType, amount, price);
+                            }
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(TransactionActivity.this, "İşlem eklenirken bir hata oluştu", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TransactionActivity.this, "Geçmiş işlemler alınamadı", Toast.LENGTH_SHORT).show();
                         });
+            } else {
+                saveTransaction(db, uid, coinID, transactionType, amount, price);
             }
         });
+    }
+
+    private void fetchUpdatedPrice(int coinID) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.coinlore.net/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        CurrenciesAPI api = retrofit.create(CurrenciesAPI.class);
+        api.getCurrencies().enqueue(new Callback<List<Currencies>>() {
+            @Override
+            public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
+                if (response.isSuccessful()) {
+                    for (Currencies c : response.body()) {
+                        if (c.id == coinID) {
+                            editTransactionPrice.setHint("Fiyat: ($" + c.price_usd + ")");
+                            editTransactionPrice.setOnFocusChangeListener((v, hasFocus) -> {
+                                if (hasFocus && TextUtils.isEmpty(editTransactionPrice.getText())) {
+                                    editTransactionPrice.setText(String.valueOf(c.price_usd));
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Currencies>> call, Throwable t) {
+                Toast.makeText(TransactionActivity.this, "Fiyat alınamadı", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveTransaction(FirebaseFirestore db, String uid, int coinID, String type, double amount, double price) {
+        Map<String, Object> transaction = new HashMap<>();
+        transaction.put("coinID", coinID);
+        transaction.put("type", type);
+        transaction.put("amount", amount);
+        transaction.put("price", price);
+        transaction.put("timestamp", System.currentTimeMillis());
+
+        db.collection("users")
+                .document(uid)
+                .collection("transactions")
+                .add(transaction)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(TransactionActivity.this, "İşlem başarıyla eklendi", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(TransactionActivity.this, "İşlem eklenirken bir hata oluştu", Toast.LENGTH_SHORT).show();
+                });
     }
 }
