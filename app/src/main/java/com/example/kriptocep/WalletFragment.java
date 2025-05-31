@@ -191,6 +191,7 @@ public class WalletFragment extends Fragment {
                     double totalBuyCost = 0.0;
                     double totalSellAmount = 0.0;
 
+                    // Satış ve alış verilerini topla
                     for (Transaction tx : transactions) {
                         if (tx.type.equals("buy")) {
                             totalBuyAmount += tx.amount;
@@ -200,27 +201,29 @@ public class WalletFragment extends Fragment {
                         }
                     }
 
+                    // Net elde kalan coin miktarı
                     double netAmount = totalBuyAmount - totalSellAmount;
-                    if (netAmount < 0) netAmount = 0;  // negatif coin olamaz, ekstra güvenlik
+                    if (netAmount < 0) netAmount = 0; // negatif olmaması için
 
-                    double averageBuyPrice = 0;
-                    if (totalBuyAmount > 0) {
-                        averageBuyPrice = totalBuyCost / totalBuyAmount;
+                    // Gerçekleşmemiş alış maliyetini hesapla
+                    double remainingBuyCost = 0.0;
+                    double remainingAmount = netAmount;
+                    for (Transaction tx : transactions) {
+                        if (tx.type.equals("buy")) {
+                            double useAmount = Math.min(tx.amount, remainingAmount);
+                            remainingBuyCost += useAmount * tx.price;
+                            remainingAmount -= useAmount;
+                            if (remainingAmount <= 0) break;
+                        }
                     }
 
-                    double profit = 0;
+                    // Kar/zarar hesapla (sadece elde kalanlar için)
                     double currentValue = netAmount * currency.price_usd;
+                    double unrealizedProfit = currentValue - remainingBuyCost;
 
-                    if (netAmount > 0) {
-                        profit = netAmount * (currency.price_usd - averageBuyPrice);
-                    } else {
-                        profit = 0;
-                        currentValue = 0;
-                    }
 
                     totalWalletValue += currentValue;
-                    totalProfit += profit;
-
+                    totalProfit += unrealizedProfit;
 
                     WalletCoinItem item = new WalletCoinItem(
                             coinID,
@@ -229,16 +232,16 @@ public class WalletFragment extends Fragment {
                             netAmount,
                             currency.price_usd,
                             currentValue,
-                            profit
+                            unrealizedProfit
                     );
-                    walletList.add(item);
+
+                    if(netAmount > 0)
+                        walletList.add(item);
 
                     apiResponsesReceived++;
 
                     if (apiResponsesReceived == coinTransactionMap.size()) {
-                        if (!isAdded() || getActivity() == null || getView() == null) {
-                            return;
-                        }
+                        if (!isAdded() || getActivity() == null || getView() == null) return;
 
                         totalBalance.setText(String.format("$%.2f", totalWalletValue));
 
@@ -246,7 +249,7 @@ public class WalletFragment extends Fragment {
                             netProfit.setText(String.format("+$%.2f", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.green));
                         } else {
-                            netProfit.setText(String.format("$%.2f", totalProfit));
+                            netProfit.setText(String.format("-$%.2f", Math.abs(totalProfit)));
                             netProfit.setTextColor(getResources().getColor(R.color.red));
                         }
 
@@ -263,6 +266,4 @@ public class WalletFragment extends Fragment {
             }
         });
     }
-
-
 }
