@@ -46,12 +46,13 @@ public class WalletFragment extends Fragment {
     String baseURL = "https://api.coinlore.net/api/";
     RecyclerView recyclerViewWalletCoin;
 
-    class Transaction {
-        int coinID;
-        String type;
-        double amount;
-        double price;
-        long timestamp;
+    // WalletFragment.java içinde
+    public static class Transaction {
+        public int coinID;
+        public String type;
+        public double amount;
+        public double price;
+        public long timestamp;
 
         public Transaction(int coinID, String type, double amount, double price, long timestamp) {
             this.coinID = coinID;
@@ -61,6 +62,7 @@ public class WalletFragment extends Fragment {
             this.timestamp = timestamp;
         }
     }
+
 
     Map<Integer, List<Transaction>> coinTransactionMap;
     double totalWalletValue = 0.0;

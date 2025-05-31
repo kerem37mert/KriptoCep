@@ -99,6 +99,7 @@ public class ProfileFragment extends Fragment {
                     .load(file)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
+                    .circleCrop()
                     .into(imageProfile);
         } else {
             // Default profil resmi göster
