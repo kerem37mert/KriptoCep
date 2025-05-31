@@ -94,14 +94,12 @@ public class WalletFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewWalletCoin.setLayoutManager(linearLayoutManager);
         walletList = new ArrayList<>();
-        walletCoinAdapter = new WalletCoinAdapter( walletList);
+        walletCoinAdapter = new WalletCoinAdapter(walletList);
         recyclerViewWalletCoin.setAdapter(walletCoinAdapter);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         uid = auth.getCurrentUser().getUid();
-
-        getTransactions();
 
         transactionBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SelectCoinActivity.class);
@@ -109,6 +107,7 @@ public class WalletFragment extends Fragment {
         });
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         getTransactions();
@@ -121,12 +120,14 @@ public class WalletFragment extends Fragment {
                 .collection("transactions")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-
                     if (queryDocumentSnapshots.isEmpty()) {
-                        // Hiç işlem yok: kullanıcı cüzdanına hiç varlık eklememiş
                         textViewNotFound.setVisibility(View.VISIBLE);
                         textViewCurrencyName.setVisibility(View.GONE);
                         textViewValue.setVisibility(View.GONE);
+                        walletList.clear();
+                        walletCoinAdapter.notifyDataSetChanged();
+                        totalBalance.setText("$0.00");
+                        netProfit.setText("$0.00");
                         return;
                     }
 
@@ -143,29 +144,27 @@ public class WalletFragment extends Fragment {
 
                         Transaction transaction = new Transaction(coinID, type, amount, price, timestamp);
 
-                        if (!coinTransactionMap.containsKey(coinID))
+                        if (!coinTransactionMap.containsKey(coinID)) {
                             coinTransactionMap.put(coinID, new ArrayList<>());
+                        }
+                        coinTransactionMap.get(coinID).add(transaction);
+                    }
 
-                        // Mevcut coin listesine bu transaction'ı ekle
-                        coinTransactionMap.get(coinID).add(transaction);                    }
-
-                    // Tüm transaction'lar alındıktan sonra cüzdanı yaz
                     writeWallet();
-                });
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Transaction fetch failed", e));
     }
 
     public void writeWallet() {
         totalWalletValue = 0.0;
         totalProfit = 0.0;
         apiResponsesReceived = 0;
-
-        walletList.clear(); // 🔥 Listeyi temizle
-        walletCoinAdapter.notifyDataSetChanged(); // Adapter'a bildir
+        walletList.clear();
+        walletCoinAdapter.notifyDataSetChanged();
 
         for (Map.Entry<Integer, List<Transaction>> entry : coinTransactionMap.entrySet()) {
             int coinID = entry.getKey();
             List<Transaction> transactions = entry.getValue();
-
             fetchCurrencyWithCallback(coinID, transactions);
         }
     }
@@ -190,32 +189,38 @@ public class WalletFragment extends Fragment {
 
                     double totalBuyAmount = 0.0;
                     double totalBuyCost = 0.0;
-                    double totalSellRevenue = 0.0;
-                    double netAmount = 0.0;
+                    double totalSellAmount = 0.0;
 
                     for (Transaction tx : transactions) {
                         if (tx.type.equals("buy")) {
                             totalBuyAmount += tx.amount;
                             totalBuyCost += tx.amount * tx.price;
-                            netAmount += tx.amount;
                         } else if (tx.type.equals("sell")) {
-                            totalSellRevenue += tx.amount * tx.price;
-                            netAmount -= tx.amount;
+                            totalSellAmount += tx.amount;
                         }
                     }
 
-                    // 🔧 Değişiklik burada başlıyor
-                    double currentValue = netAmount > 0 ? netAmount * currency.price_usd : 0.0;
+                    double netAmount = totalBuyAmount - totalSellAmount;
+                    if (netAmount < 0) netAmount = 0;  // negatif coin olamaz, ekstra güvenlik
 
-                    double profit;
-                    if (netAmount <= 0) {
-                        profit = totalSellRevenue - totalBuyCost;
+                    double averageBuyPrice = 0;
+                    if (totalBuyAmount > 0) {
+                        averageBuyPrice = totalBuyCost / totalBuyAmount;
+                    }
+
+                    double profit = 0;
+                    double currentValue = netAmount * currency.price_usd;
+
+                    if (netAmount > 0) {
+                        profit = netAmount * (currency.price_usd - averageBuyPrice);
                     } else {
-                        profit = (totalSellRevenue + currentValue) - totalBuyCost;
+                        profit = 0;
+                        currentValue = 0;
                     }
 
                     totalWalletValue += currentValue;
                     totalProfit += profit;
+
 
                     WalletCoinItem item = new WalletCoinItem(
                             coinID,
@@ -236,6 +241,7 @@ public class WalletFragment extends Fragment {
                         }
 
                         totalBalance.setText(String.format("$%.2f", totalWalletValue));
+
                         if (totalProfit >= 0) {
                             netProfit.setText(String.format("+$%.2f", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.green));
@@ -243,6 +249,7 @@ public class WalletFragment extends Fragment {
                             netProfit.setText(String.format("$%.2f", totalProfit));
                             netProfit.setTextColor(getResources().getColor(R.color.red));
                         }
+
                         walletCoinAdapter.notifyDataSetChanged();
                     }
                 } else {
@@ -256,4 +263,6 @@ public class WalletFragment extends Fragment {
             }
         });
     }
+
+
 }
