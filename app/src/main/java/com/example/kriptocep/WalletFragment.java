@@ -109,6 +109,11 @@ public class WalletFragment extends Fragment {
         });
     }
 
+    public void onResume() {
+        super.onResume();
+        getTransactions();
+    }
+
     public void getTransactions() {
         db.collection("users")
                 .document(uid)

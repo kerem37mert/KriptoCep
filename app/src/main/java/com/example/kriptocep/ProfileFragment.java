@@ -84,6 +84,11 @@ public class ProfileFragment extends Fragment {
         getUserInfo();
     }
 
+    public void onResume() {
+        super.onResume();
+        getUserInfo();
+    }
+
     public void getUserInfo() {
 
         File file = new File(requireContext().getFilesDir(), "profile.png");
