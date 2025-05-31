@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/home"
@@ -9,6 +10,10 @@
         android:icon="@drawable/wallet"
         android:title="Cüzdan" />
     <item
+        android:id="@+id/nav_transactions"
+        android:icon="@drawable/aboutus"
+        android:title="İşlem Geçmişi" />
+    <item
         android:id="@+id/nav_aboutus"
         android:icon="@drawable/aboutus"
         android:title="Hakkımızda" />
@@ -16,5 +21,6 @@
         android:id="@+id/nav_profile"
         android:icon="@drawable/profile"
         android:title="Profil" />
+
 
 </menu>

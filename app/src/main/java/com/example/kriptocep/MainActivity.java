@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_wallet:
                     replaceFragment(new WalletFragment());
                     break;
-                /*case R.id.nav_transactions:
+                case R.id.nav_transactions:
                     replaceFragment(new TransactionHistoryFragment());
-                    break;*/
+                    break;
 
                 case R.id.nav_aboutus:
                     replaceFragment(new AboutUsFragment());
