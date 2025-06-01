@@ -13,12 +13,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionHistoryAdapter.ViewHolder> {
 
     List<WalletFragment.Transaction> transactions;
+    private Retrofit retrofit;
+    private CurrencyAPI currencyAPI;
 
     public TransactionHistoryAdapter(List<WalletFragment.Transaction> transactions) {
         this.transactions = transactions;
+
+        // Retrofit instance'ını burada oluşturuyoruz, her seferinde değil
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.coinlore.net/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        currencyAPI = retrofit.create(CurrencyAPI.class);
     }
 
     @NonNull
@@ -37,11 +53,34 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
         holder.price.setText("Price: $" + tx.price);
         holder.date.setText("Date: " + new SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 .format(new Date(tx.timestamp)));
+
+        fetchCoinName(tx.coinID, holder.coinName);
     }
 
     @Override
     public int getItemCount() {
         return transactions.size();
+    }
+
+    private void fetchCoinName(int coinID, TextView coinNameView) {
+        Call<List<Currencies>> call = currencyAPI.getCurrency(coinID);
+
+        call.enqueue(new Callback<List<Currencies>>() {
+            @Override
+            public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    Currencies coin = response.body().get(0); // API id ile filtreli tek eleman döner
+                    coinNameView.setText(coin.name); // symbolde olabilir
+                } else {
+                    coinNameView.setText("Bilinmeyen Coin");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Currencies>> call, Throwable t) {
+                coinNameView.setText("İnternet Hatası");
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
