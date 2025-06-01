@@ -11,7 +11,7 @@
         android:title="Cüzdan" />
     <item
         android:id="@+id/nav_transactions"
-        android:icon="@drawable/aboutus"
+        android:icon="@drawable/history"
         android:title="İşlem Geçmişi" />
     <item
         android:id="@+id/nav_aboutus"
