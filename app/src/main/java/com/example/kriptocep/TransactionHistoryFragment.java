@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,12 +82,11 @@ public class TransactionHistoryFragment extends Fragment {
                 .collection("users")
                 .document(uid)
                 .collection("transactions")
-                .whereEqualTo("coinID", coinID)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (var doc : queryDocumentSnapshots) {
                         WalletFragment.Transaction tx = new WalletFragment.Transaction(
-                                doc.getLong("coinID").intValue(),
+                                doc.getLong("coinID").intValue(), // dikkat!
                                 doc.getString("type"),
                                 doc.getDouble("amount"),
                                 doc.getDouble("price"),
@@ -94,7 +94,9 @@ public class TransactionHistoryFragment extends Fragment {
                         );
                         transactionList.add(tx);
                     }
+                    Collections.sort(transactionList, (tx1, tx2) -> Long.compare(tx2.timestamp, tx1.timestamp));
                     adapter.notifyDataSetChanged();
                 });
+
     }
 }

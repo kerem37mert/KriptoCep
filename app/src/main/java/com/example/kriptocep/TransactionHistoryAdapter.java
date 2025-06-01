@@ -45,10 +45,11 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView type, amount, price, date;
+        TextView coinName, type, amount, price, date;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            coinName = itemView.findViewById(R.id.txCoinName);
             type = itemView.findViewById(R.id.txType);
             amount = itemView.findViewById(R.id.txAmount);
             price = itemView.findViewById(R.id.txPrice);
