@@ -5,49 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_blue"
+    android:fitsSystemWindows="true"
     tools:context=".AboutUsFragment">
-
-
-    <Button
-        android:id="@+id/adresBtn"
-        android:layout_width="413dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="484dp"
-        android:text="  Adres"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hakkimizdaBtn"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/hakkimizdaBtn"
-        android:layout_width="413dp"
-        android:layout_height="69dp"
-        android:layout_marginBottom="560dp"
-        android:text="  Hakkımızda"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/iletisimBtn"
-        android:layout_width="413dp"
-        android:layout_height="69dp"
-        android:layout_marginBottom="632dp"
-        android:text="  İletişim Bilgilerimiz"
-        android:textAlignment="textStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="İletişim Bilgilerimiz"
+        android:background="@drawable/profile_button"
+        android:textColor="@color/white"
+        android:textSize="15dp"
         android:textAllCaps="false"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Adres Butonu -->
+    <Button
+        android:id="@+id/adresBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Adres"
+        android:background="@drawable/profile_button"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iletisimBtn" />
+
+    <!-- SSS Butonu Gizlilik Butonunun Üstüne Alındı -->
+    <Button
+        android:id="@+id/sssBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sıkça Sorulan Sorular (SSS)"
+        android:background="@drawable/profile_button"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adresBtn" />
+
+    <!-- Gizlilik Butonu -->
+    <Button
+        android:id="@+id/gizlilikBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Gizlilik Politikası"
+        android:background="@drawable/profile_button"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sssBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

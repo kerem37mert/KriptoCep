@@ -13,14 +13,24 @@ import android.widget.Button;
 
 public class AboutUsFragment extends Fragment {
 
+    Button adresBtn;
+    Button gizlilikBtn;;
+    Button iletisimBtn;
+    Button sssBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_about_us, container, false);
+        return inflater.inflate(R.layout.fragment_about_us, container, false);
+    }
 
-        Button adresBtn = view.findViewById(R.id.adresBtn);
-        Button hakkimizdaBtn = view.findViewById(R.id.hakkimizdaBtn);
-        Button iletisimBtn = view.findViewById(R.id.iletisimBtn);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        adresBtn = view.findViewById(R.id.adresBtn);
+        gizlilikBtn = view.findViewById(R.id.gizlilikBtn);
+        iletisimBtn = view.findViewById(R.id.iletisimBtn);
+        sssBtn = view.findViewById(R.id.sssBtn);
 
         adresBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,10 +40,10 @@ public class AboutUsFragment extends Fragment {
             }
         });
 
-        hakkimizdaBtn.setOnClickListener(new View.OnClickListener() {
+        gizlilikBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), hakkimizdaActivity.class);
+                Intent intent = new Intent(getActivity(), gizlilikActivity.class);
                 startActivity(intent);
             }
         });
@@ -46,6 +56,12 @@ public class AboutUsFragment extends Fragment {
             }
         });
 
-        return view;
+        sssBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SSSActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

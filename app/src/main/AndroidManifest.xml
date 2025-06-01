@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Kriptocep"
         tools:targetApi="31">
         <activity
+            android:name=".SSSActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditPassActivity"
             android:exported="false" />
         <activity
@@ -28,7 +31,7 @@
             android:name=".ChartActivity"
             android:exported="false" />
         <activity
-            android:name=".hakkimizdaActivity"
+            android:name=".gizlilikActivity"
             android:exported="false" />
         <activity
             android:name=".iletisimActivity"
