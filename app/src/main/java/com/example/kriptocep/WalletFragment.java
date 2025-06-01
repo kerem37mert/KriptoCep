@@ -258,7 +258,7 @@ public class WalletFragment extends Fragment {
                         walletCoinAdapter.notifyDataSetChanged();
                     }
                 } else {
-                    Log.e("API ERROR", "Başarısız yanıt veya boş veri.");
+                    Log.e("API ERROR", "Başarısız yanıt veya boş veri girişi.");
                 }
             }
 
