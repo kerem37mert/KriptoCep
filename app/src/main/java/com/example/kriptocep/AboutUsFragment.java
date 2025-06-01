@@ -13,7 +13,6 @@ import android.widget.Button;
 
 public class AboutUsFragment extends Fragment {
 
-    Button adresBtn;
     Button gizlilikBtn;;
     Button iletisimBtn;
     Button sssBtn;
@@ -27,18 +26,9 @@ public class AboutUsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adresBtn = view.findViewById(R.id.adresBtn);
         gizlilikBtn = view.findViewById(R.id.gizlilikBtn);
         iletisimBtn = view.findViewById(R.id.iletisimBtn);
         sssBtn = view.findViewById(R.id.sssBtn);
-
-        adresBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), adres.class);
-                startActivity(intent);
-            }
-        });
 
         gizlilikBtn.setOnClickListener(new View.OnClickListener() {
             @Override

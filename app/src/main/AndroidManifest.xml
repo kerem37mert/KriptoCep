@@ -37,9 +37,6 @@
             android:name=".iletisimActivity"
             android:exported="false" />
         <activity
-            android:name=".adres"
-            android:exported="false" />
-        <activity
             android:name=".TransactionActivity"
             android:exported="false" />
         <activity
