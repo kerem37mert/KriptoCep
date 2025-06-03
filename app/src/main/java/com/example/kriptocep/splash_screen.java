@@ -45,6 +45,6 @@ public class splash_screen extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // Ana ekranı kapat
             }
-        }, 3000);
+        }, 2000);
     }
 }
