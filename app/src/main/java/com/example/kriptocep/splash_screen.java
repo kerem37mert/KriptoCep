@@ -3,6 +3,9 @@ package com.example.kriptocep;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +18,17 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class splash_screen extends AppCompatActivity {
 
+    ImageView splashImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
+
+        splashImg = findViewById(R.id.splashImg);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        splashImg.startAnimation(animation);
 
         new Handler().postDelayed(() -> {
             // Kullanıcıyı kontrol et
@@ -36,6 +45,6 @@ public class splash_screen extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // Ana ekranı kapat
             }
-        }, 3500);
+        }, 3000);
     }
 }
