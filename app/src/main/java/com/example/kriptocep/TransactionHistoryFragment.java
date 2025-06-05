@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,34 +25,9 @@ import java.util.Locale;
 
 public class TransactionHistoryFragment extends Fragment {
 
-    private static final String ARG_COIN_ID = "coinID";
-    private static final String ARG_COIN_NAME = "coinName";
-
-    private int coinID;
-    private String coinName;
-
-    private TextView coinNameText;
     private RecyclerView recyclerView;
     private TransactionHistoryAdapter adapter;
     private List<WalletFragment.Transaction> transactionList;
-
-    public static TransactionHistoryFragment newInstance(int coinID, String coinName) {
-        TransactionHistoryFragment fragment = new TransactionHistoryFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COIN_ID, coinID);
-        args.putString(ARG_COIN_NAME, coinName);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            coinID = getArguments().getInt(ARG_COIN_ID);
-            coinName = getArguments().getString(ARG_COIN_NAME);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,10 +39,7 @@ public class TransactionHistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        coinNameText = view.findViewById(R.id.coinNameText);
         recyclerView = view.findViewById(R.id.transactionRecycler);
-
-        coinNameText.setText(coinName + " Transactions");
 
         transactionList = new ArrayList<>();
         adapter = new TransactionHistoryAdapter(transactionList);
@@ -74,6 +47,21 @@ public class TransactionHistoryFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         fetchTransactions();
+
+        ConstraintLayout rootLayout = view.findViewById(R.id.transactionLayout); // Eğer id yoksa ekleyelim
+
+        int statusBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
+
+        rootLayout.setPadding(
+                rootLayout.getPaddingLeft(),
+                statusBarHeight + rootLayout.getPaddingTop(), // üst padding + varsa mevcut padding
+                rootLayout.getPaddingRight(),
+                rootLayout.getPaddingBottom()
+        );
     }
 
     private void fetchTransactions() {

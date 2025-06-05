@@ -8,4 +8,8 @@
     <color name="gold">#FFD700</color>
     <color name="green">#00FF7F</color>
     <color name="red">#F44336</color>
+    <color name="buy_green">#4CAF50</color>
+    <color name="sell_red">#F44336</color>
+    <color name="buy_green_light">#1A4CAF50</color>
+    <color name="sell_red_light">#1AF44336</color>
 </resources>
