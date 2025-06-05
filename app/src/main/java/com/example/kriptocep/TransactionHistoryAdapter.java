@@ -29,9 +29,16 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
     List<WalletFragment.Transaction> transactions;
     private Retrofit retrofit;
     private CurrencyAPI currencyAPI;
+    private OnTransactionDeleteListener deleteListener;
 
-    public TransactionHistoryAdapter(List<WalletFragment.Transaction> transactions) {
+    // Interface for delete callback
+    public interface OnTransactionDeleteListener {
+        void onTransactionDelete(WalletFragment.Transaction transaction);
+    }
+
+    public TransactionHistoryAdapter(List<WalletFragment.Transaction> transactions, OnTransactionDeleteListener listener) {
         this.transactions = transactions;
+        this.deleteListener = listener;
 
         // Retrofit instance'ını burada oluşturuyoruz, her seferinde değil
         retrofit = new Retrofit.Builder()
@@ -110,6 +117,20 @@ public class TransactionHistoryAdapter extends RecyclerView.Adapter<TransactionH
                 coinIconView.setImageResource(R.drawable.ic_coin);
             }
         });
+    }
+
+    public void removeItem(int position) {
+        WalletFragment.Transaction transaction = transactions.get(position);
+        transactions.remove(position);
+        notifyItemRemoved(position);
+        if (deleteListener != null) {
+            deleteListener.onTransactionDelete(transaction);
+        }
+    }
+
+    public void restoreItem(WalletFragment.Transaction transaction, int position) {
+        transactions.add(position, transaction);
+        notifyItemInserted(position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

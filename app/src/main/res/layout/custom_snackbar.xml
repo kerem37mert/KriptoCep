@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/snackbar_background"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/snackbarIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tint="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/snackbarText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="İşlem silindi"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@id/snackbarIcon"
+        app:layout_constraintEnd_toStartOf="@id/snackbarAction"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/snackbarAction"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="Geri Al"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        android:background="@drawable/snackbar_button_background"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="0dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 
