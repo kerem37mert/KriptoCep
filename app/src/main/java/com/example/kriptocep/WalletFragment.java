@@ -74,6 +74,8 @@ public class WalletFragment extends Fragment {
     WalletCoinAdapter walletCoinAdapter;
     List<WalletCoinItem> walletList;
 
+    private boolean isFirstLoad = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,6 +123,10 @@ public class WalletFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (isFirstLoad) {
+            isFirstLoad = false;
+            return;
+        }
         getTransactions();
     }
 
