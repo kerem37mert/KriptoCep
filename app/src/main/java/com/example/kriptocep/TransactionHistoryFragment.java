@@ -37,6 +37,7 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
     private List<WalletFragment.Transaction> transactionList;
     private FirebaseFirestore db;
     private String uid;
+    private View emptyStateLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,8 +53,11 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // RecyclerView kurulumu
+        // View'ları bul
         recyclerView = view.findViewById(R.id.transactionRecycler);
+        emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
+
+        // RecyclerView kurulumu
         transactionList = new ArrayList<>();
         adapter = new TransactionHistoryAdapter(transactionList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -107,6 +111,7 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
                 undoButton.setOnClickListener(v -> {
                     // Önce adapter'da geri yükle
                     adapter.restoreItem(deletedTransaction, position);
+                    updateEmptyState();
                     
                     // Firebase'e geri yükle
                     Map<String, Object> transaction = new HashMap<>();
@@ -185,13 +190,23 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
         );
     }
 
+    private void updateEmptyState() {
+        if (transactionList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyStateLayout.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyStateLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void fetchTransactions() {
         db.collection("users")
           .document(uid)
           .collection("transactions")
           .get()
           .addOnSuccessListener(queryDocumentSnapshots -> {
-              transactionList.clear(); // Listeyi temizle
+              transactionList.clear();
               for (var doc : queryDocumentSnapshots) {
                   WalletFragment.Transaction tx = new WalletFragment.Transaction(
                       doc.getLong("coinID").intValue(),
@@ -204,9 +219,9 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
               }
               Collections.sort(transactionList, (tx1, tx2) -> Long.compare(tx2.timestamp, tx1.timestamp));
               adapter.notifyDataSetChanged();
+              updateEmptyState();
           })
           .addOnFailureListener(e -> {
-              // Hata durumunda kullanıcıya bilgi ver
               if (getView() != null) {
                   Snackbar.make(getView(), "İşlemler yüklenirken hata oluştu", Snackbar.LENGTH_LONG).show();
               }
@@ -224,6 +239,7 @@ public class TransactionHistoryFragment extends Fragment implements TransactionH
           .addOnSuccessListener(queryDocumentSnapshots -> {
               if (!queryDocumentSnapshots.isEmpty()) {
                   queryDocumentSnapshots.getDocuments().get(0).getReference().delete();
+                  updateEmptyState(); // Silme işleminden sonra boş durumu kontrol et
               }
           });
     }

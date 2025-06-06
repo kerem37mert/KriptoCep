@@ -63,7 +63,6 @@ public class WalletFragment extends Fragment {
         }
     }
 
-
     Map<Integer, List<Transaction>> coinTransactionMap;
     double totalWalletValue = 0.0;
     double totalProfit = 0.0;
