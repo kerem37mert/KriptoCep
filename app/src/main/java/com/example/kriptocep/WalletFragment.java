@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class WalletFragment extends Fragment {
     Retrofit retrofit;
     String baseURL = "https://api.coinlore.net/api/";
     RecyclerView recyclerViewWalletCoin;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     // WalletFragment.java içinde
     public static class Transaction {
@@ -90,6 +92,7 @@ public class WalletFragment extends Fragment {
         textViewNotFound = view.findViewById(R.id.textViewNotFound);
         textViewCurrencyName = view.findViewById(R.id.textViewCurrencyName);
         textViewValue = view.findViewById(R.id.textViewValue);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
         recyclerViewWalletCoin = view.findViewById(R.id.recyclerViewWalletCoin);
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -106,11 +109,22 @@ public class WalletFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SelectCoinActivity.class);
             startActivity(intent);
         });
+
+        // SwipeRefreshLayout ayarları
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue);
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+
+        // İlk veri yüklemesi
+        getTransactions();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getTransactions();
+    }
+
+    private void refreshData() {
         getTransactions();
     }
 
@@ -129,6 +143,9 @@ public class WalletFragment extends Fragment {
                         walletCoinAdapter.notifyDataSetChanged();
                         totalBalance.setText("$0.00");
                         netProfit.setText("$0.00");
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                         return;
                     }
 
@@ -153,7 +170,12 @@ public class WalletFragment extends Fragment {
 
                     writeWallet();
                 })
-                .addOnFailureListener(e -> Log.e("Firestore", "Transaction fetch failed", e));
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Transaction fetch failed", e);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     public void writeWallet() {
@@ -163,13 +185,19 @@ public class WalletFragment extends Fragment {
         walletList.clear();
         walletCoinAdapter.notifyDataSetChanged();
 
+        if (coinTransactionMap.isEmpty()) {
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            return;
+        }
+
         for (Map.Entry<Integer, List<Transaction>> entry : coinTransactionMap.entrySet()) {
             int coinID = entry.getKey();
             List<Transaction> transactions = entry.getValue();
             fetchCurrencyWithCallback(coinID, transactions);
         }
     }
-
 
     public void fetchCurrencyWithCallback(int coinID, List<Transaction> transactions) {
         if (retrofit == null) {
@@ -192,7 +220,6 @@ public class WalletFragment extends Fragment {
                     double totalBuyCost = 0.0;
                     double totalSellAmount = 0.0;
 
-                    // Satış ve alış verilerini topla
                     for (Transaction tx : transactions) {
                         if (tx.type.equals("buy")) {
                             totalBuyAmount += tx.amount;
@@ -202,11 +229,9 @@ public class WalletFragment extends Fragment {
                         }
                     }
 
-                    // Net elde kalan coin miktarı
                     double netAmount = totalBuyAmount - totalSellAmount;
-                    if (netAmount < 0) netAmount = 0; // negatif olmaması için
+                    if (netAmount < 0) netAmount = 0;
 
-                    // Gerçekleşmemiş alış maliyetini hesapla
                     double remainingBuyCost = 0.0;
                     double remainingAmount = netAmount;
                     for (Transaction tx : transactions) {
@@ -218,10 +243,8 @@ public class WalletFragment extends Fragment {
                         }
                     }
 
-                    // Kar/zarar hesapla (sadece elde kalanlar için)
                     double currentValue = netAmount * currency.price_usd;
                     double unrealizedProfit = currentValue - remainingBuyCost;
-
 
                     totalWalletValue += currentValue;
                     totalProfit += unrealizedProfit;
@@ -255,15 +278,24 @@ public class WalletFragment extends Fragment {
                         }
 
                         walletCoinAdapter.notifyDataSetChanged();
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 } else {
                     Log.e("API ERROR", "Başarısız yanıt veya boş veri girişi.");
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Currencies>> call, Throwable t) {
                 Log.e("API ERROR", t.getMessage());
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
     }
