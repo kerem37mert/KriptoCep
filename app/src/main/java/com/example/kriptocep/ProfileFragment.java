@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,14 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileFragment extends Fragment {
 
@@ -37,7 +46,11 @@ public class ProfileFragment extends Fragment {
     TextView textViewTotalBalance;
     TextView textViewTotalCoins;
     ImageView imageProfile;
-    ArrayList<WalletFragment.Transaction> transactionList;
+    Retrofit retrofit;
+    String baseURL = "https://api.coinlore.net/api/";
+    Map<Integer, List<WalletFragment.Transaction>> coinTransactionMap;
+    double totalBalance = 0.0;
+    int apiResponsesReceived = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +65,7 @@ public class ProfileFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         uid = auth.getCurrentUser().getUid();
-        transactionList = new ArrayList<>();
+        coinTransactionMap = new HashMap<>();
 
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
         btnChangePass = view.findViewById(R.id.btnChangePass);
@@ -107,7 +120,7 @@ public class ProfileFragment extends Fragment {
           .collection("transactions")
           .get()
           .addOnSuccessListener(queryDocumentSnapshots -> {
-              transactionList.clear();
+              coinTransactionMap.clear();
               for (var doc : queryDocumentSnapshots) {
                   WalletFragment.Transaction tx = new WalletFragment.Transaction(
                       doc.getLong("coinID").intValue(),
@@ -116,7 +129,10 @@ public class ProfileFragment extends Fragment {
                       doc.getDouble("price"),
                       doc.getLong("timestamp")
                   );
-                  transactionList.add(tx);
+                  if (!coinTransactionMap.containsKey(doc.getLong("coinID").intValue())) {
+                      coinTransactionMap.put(doc.getLong("coinID").intValue(), new ArrayList<>());
+                  }
+                  coinTransactionMap.get(doc.getLong("coinID").intValue()).add(tx);
               }
               updateStatistics();
           })
@@ -129,32 +145,92 @@ public class ProfileFragment extends Fragment {
 
     private void updateStatistics() {
         // Toplam işlem sayısı
-        textViewTotalTransactions.setText(String.valueOf(transactionList.size()));
+        int totalTransactions = 0;
+        for (List<WalletFragment.Transaction> transactions : coinTransactionMap.values()) {
+            totalTransactions += transactions.size();
+        }
+        textViewTotalTransactions.setText(String.valueOf(totalTransactions));
 
         // Toplam bakiye ve coin hesaplama
-        double totalBalance = 0.0;
         Map<Integer, Double> coinBalances = new HashMap<>();
+        totalBalance = 0.0;
+        apiResponsesReceived = 0;
 
-        for (WalletFragment.Transaction tx : transactionList) {
-            double amount = tx.amount;
-            if (tx.type.equals("SELL")) {
-                amount = -amount;
+        for (Map.Entry<Integer, List<WalletFragment.Transaction>> entry : coinTransactionMap.entrySet()) {
+            double coinBalance = 0.0;
+            int coinID = entry.getKey();
+            List<WalletFragment.Transaction> transactions = entry.getValue();
+
+            if (retrofit == null) {
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
             }
-            
-            // Coin bakiyesini güncelle
-            coinBalances.put(tx.coinID, coinBalances.getOrDefault(tx.coinID, 0.0) + amount);
-            
-            // Toplam bakiyeyi güncelle
-            totalBalance += amount * tx.price;
+
+            CurrencyAPI currencyAPI = retrofit.create(CurrencyAPI.class);
+            Call<List<Currencies>> call = currencyAPI.getCurrency(coinID);
+
+            call.enqueue(new Callback<List<Currencies>>() {
+                @Override
+                public void onResponse(Call<List<Currencies>> call, Response<List<Currencies>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        Currencies currency = response.body().get(0);
+
+                        double totalBuyAmount = 0.0;
+                        double totalBuyCost = 0.0;
+                        double totalSellAmount = 0.0;
+
+                        for (WalletFragment.Transaction tx : transactions) {
+                            if (tx.type.equals("buy")) {
+                                totalBuyAmount += tx.amount;
+                                totalBuyCost += tx.amount * tx.price;
+                            } else if (tx.type.equals("sell")) {
+                                totalSellAmount += tx.amount;
+                            }
+                        }
+
+                        double netAmount = totalBuyAmount - totalSellAmount;
+                        if (netAmount < 0) netAmount = 0;
+
+                        double currentValue = netAmount * currency.price_usd;
+                        totalBalance += currentValue;
+
+                        if (netAmount > 0) {
+                            coinBalances.put(coinID, netAmount);
+                        }
+
+                        apiResponsesReceived++;
+                        if (apiResponsesReceived == coinTransactionMap.size()) {
+                            if (!isAdded() || getActivity() == null || getView() == null) return;
+
+                            // Toplam coin sayısı (sıfırdan büyük bakiyesi olan coinler)
+                            textViewTotalCoins.setText(String.valueOf(coinBalances.size()));
+                            textViewTotalBalance.setText("$" + formatCurrency(totalBalance));
+                        }
+                    } else {
+                        Log.e("API ERROR", "Başarısız yanıt veya boş veri girişi.");
+                        apiResponsesReceived++;
+                        if (apiResponsesReceived == coinTransactionMap.size()) {
+                            if (!isAdded() || getActivity() == null || getView() == null) return;
+                            textViewTotalCoins.setText(String.valueOf(coinBalances.size()));
+                            textViewTotalBalance.setText("$" + formatCurrency(totalBalance));
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Currencies>> call, Throwable t) {
+                    Log.e("API ERROR", t.getMessage());
+                    apiResponsesReceived++;
+                    if (apiResponsesReceived == coinTransactionMap.size()) {
+                        if (!isAdded() || getActivity() == null || getView() == null) return;
+                        textViewTotalCoins.setText(String.valueOf(coinBalances.size()));
+                        textViewTotalBalance.setText("$" + formatCurrency(totalBalance));
+                    }
+                }
+            });
         }
-
-        // Toplam coin sayısı (sıfırdan büyük bakiyesi olan coinler)
-        long totalCoins = coinBalances.values().stream()
-                .filter(balance -> balance > 0)
-                .count();
-
-        textViewTotalBalance.setText(formatCurrency(totalBalance));
-        textViewTotalCoins.setText(String.valueOf(totalCoins));
     }
 
     public void getUserInfo() {
