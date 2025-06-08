@@ -35,7 +35,6 @@ public class AboutUsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Butonları bul
         gizlilikBtn = view.findViewById(R.id.gizlilikBtn);
         iletisimBtn = view.findViewById(R.id.iletisimBtn);
         sssBtn = view.findViewById(R.id.sssBtn);
@@ -44,7 +43,7 @@ public class AboutUsFragment extends Fragment {
         btnLinkedIn = view.findViewById(R.id.btnLinkedIn);
         appVersion = view.findViewById(R.id.appVersion);
 
-        // Uygulama versiyonunu göster
+        // Uygulama versiyonunu gösterme
         try {
             PackageInfo pInfo = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), 0);
             String version = pInfo.versionName;

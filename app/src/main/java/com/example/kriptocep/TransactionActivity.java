@@ -63,9 +63,8 @@ public class TransactionActivity extends AppCompatActivity {
         addTransactionBtn = findViewById(R.id.addTransactionBtn);
         tabLayout = findViewById(R.id.tabLayout);
 
-        coinID = intent.getIntExtra("id", 0); // BURADA SADECE BİR KERE TANIMLA
-        fetchUpdatedPrice(coinID); // Şimdi çağırılabilir çünkü artık ayrı metot
-
+        coinID = intent.getIntExtra("id", 0);
+        fetchUpdatedPrice(coinID);
         toolbarTransactionTitle.setText(intent.getStringExtra("symbol"));
 
         try {
@@ -87,9 +86,10 @@ public class TransactionActivity extends AppCompatActivity {
         });
 
         setSupportActionBar(toolbarTransaction);
-        toolbarTransaction.setNavigationOnClickListener(v -> finish());
+        toolbarTransaction.setNavigationOnClickListener(v -> finish());//Geri tuşuna basıldığında finish() çalışır
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        //Coin Değiştirme Butonu
         toolbarChangeButton.setOnClickListener(v -> {
             Intent intent = new Intent(TransactionActivity.this, SelectCoinActivity.class);
             startActivity(intent);
@@ -180,7 +180,7 @@ public class TransactionActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Coin Alma
     private void saveTransaction(FirebaseFirestore db, String uid, int coinID, String type, double amount, double price) {
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("coinID", coinID);

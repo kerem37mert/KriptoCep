@@ -31,19 +31,16 @@ public class splash_screen extends AppCompatActivity {
         splashImg.startAnimation(animation);
 
         new Handler().postDelayed(() -> {
-            // Kullanıcıyı kontrol et
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
             if (currentUser != null) {
-                // Eğer kullanıcı giriş yaptıysa, Ana sayfaya yönlendir
                 Intent intent = new Intent(splash_screen.this, MainActivity.class); // Ana ekran
                 startActivity(intent);
-                finish(); // Giriş ekranını kapat
+                finish();
             } else {
-                // Eğer kullanıcı giriş yapmamışsa, Giriş ekranına yönlendir
                 Intent intent = new Intent(splash_screen.this, LoginActivity.class);
                 startActivity(intent);
-                finish(); // Ana ekranı kapat
+                finish(); //
             }
         }, 2000);
     }

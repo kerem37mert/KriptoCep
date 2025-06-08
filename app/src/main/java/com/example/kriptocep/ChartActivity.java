@@ -24,11 +24,11 @@ public class ChartActivity extends AppCompatActivity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
-        webViewChart.setWebViewClient(new WebViewClient()); // Eksik olan bu
+        webViewChart.setWebViewClient(new WebViewClient());
         webViewChart.setWebChromeClient(new WebChromeClient());
 
         String symbol = getIntent().getStringExtra("symbol");
-        if (symbol == null) symbol = "BTC"; // Yedek
+        if (symbol == null) symbol = "BTC"; //
         String usdSymbol = "BINANCE:" + symbol.toUpperCase() + "USDT";
         if(symbol.equals("USDT"))
             usdSymbol = "COINBASE:" + symbol.toUpperCase() + "USD";

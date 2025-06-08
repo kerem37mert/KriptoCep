@@ -201,7 +201,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public String saveImageToInternalStorage(Bitmap bitmap, String fileName) {
-        File directory = EditProfileActivity.this.getFilesDir(); // Internal storage: /data/data/your.package.name/files/
+        File directory = EditProfileActivity.this.getFilesDir();
         File file = new File(directory, fileName);
 
         FileOutputStream fos = null;
@@ -209,7 +209,7 @@ public class EditProfileActivity extends AppCompatActivity {
             fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
-            return file.getAbsolutePath(); // Dilersen yol da döndürülür
+            return file.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

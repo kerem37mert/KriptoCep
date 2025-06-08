@@ -92,9 +92,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void fetchCurrencies(boolean showProgress) {
-        if (showProgress) {
-            progressCoinList.setVisibility(View.VISIBLE);
-        }
+        if (showProgress) progressCoinList.setVisibility(View.VISIBLE);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)

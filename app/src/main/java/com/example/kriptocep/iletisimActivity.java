@@ -90,6 +90,7 @@ public class iletisimActivity extends AppCompatActivity implements OnMapReadyCal
         mapView.onLowMemory();
     }
 
+    //cihaz dönünce yeniden oluşturulması
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.kriptocep"
-    compileSdk = 35
+    compileSdk = 35 //android 14
 
     defaultConfig {
         applicationId = "com.example.kriptocep"

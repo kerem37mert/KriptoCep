@@ -167,7 +167,7 @@ public class WalletFragment extends Fragment {
                         long timestamp = doc.getLong("timestamp");
 
                         Transaction transaction = new Transaction(coinID, type, amount, price, timestamp);
-
+                        //Her coinID için işlem listesi tutar.
                         if (!coinTransactionMap.containsKey(coinID)) {
                             coinTransactionMap.put(coinID, new ArrayList<>());
                         }
