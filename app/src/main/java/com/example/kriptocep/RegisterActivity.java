@@ -2,6 +2,7 @@ package com.example.kriptocep;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText registerEditPass2;
     Button registerBtn;
     TextView registerTextLogin;
+    TextView countdownText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
         registerEditEmail = findViewById(R.id.registerEditEmail);
         registerEditPass = findViewById(R.id.registerEditPass);
         registerEditPass2 = findViewById(R.id.registerEditPass2);
+        countdownText = findViewById(R.id.countdownText);
+        countdownText.setVisibility(View.INVISIBLE);  // Başta gizli
 
         // Giriş Sayfasına Gitmek İçin
         registerTextLogin.setOnClickListener(new View.OnClickListener() {
@@ -53,40 +57,46 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-                String emailStr = registerEditEmail.getText().toString();
-                String passStr = registerEditPass.getText().toString();
-                String passStr2 = registerEditPass2.getText().toString();
+                String emailStr = registerEditEmail.getText().toString().trim();
+                String passStr = registerEditPass.getText().toString().trim();
+                String passStr2 = registerEditPass2.getText().toString().trim();
 
                 if (emailStr.isEmpty() || passStr.isEmpty() || passStr2.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Boş Alanları Doldurunuz", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // E-posta geçerliliğini kontrol et
                 if (!isEmailValid(emailStr)) {
                     Toast.makeText(RegisterActivity.this, "Geçersiz e-posta adresi.", Toast.LENGTH_SHORT).show();
-                }
-                // Şifrelerin eşleşip eşleşmediğini kontrol et
-                else if (!passStr.equals(passStr2)) {
+                } else if (!passStr.equals(passStr2)) {
                     Toast.makeText(RegisterActivity.this, "Şifreler Eşleşmiyor", Toast.LENGTH_SHORT).show();
-                }
-                // Parola geçerliliği kontrolü
-                else if (!isPasswordValid(passStr)) {
+                } else if (!isPasswordValid(passStr)) {
                     Toast.makeText(RegisterActivity.this, "Şifre en az 8 karakter, bir harf, bir rakam ve bir özel karakter içermelidir.", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.createUserWithEmailAndPassword(emailStr, passStr)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    // Kayıt Başarılı
+                                    // Kayıt başarılı
                                     FirebaseUser user = mAuth.getCurrentUser();
 
-                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                    countdownText.setVisibility(View.VISIBLE);
+                                    new CountDownTimer(3000, 1000) {
+                                        public void onTick(long millisUntilFinished) {
+                                            countdownText.setText("Yönlendiriliyor: " + millisUntilFinished / 1000 + " saniye...");
+                                        }
+
+                                        public void onFinish() {
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }.start();
+
                                 } else {
-                                    // Kayıt Hatası
+                                    // Kayıt başarısız
                                     Exception e = task.getException();
                                     e.printStackTrace();
+                                    Toast.makeText(RegisterActivity.this, "Kayıt başarısız: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -94,23 +104,17 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    // E-posta geçerliliğini kontrol eden metod
     private boolean isEmailValid(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    // Şifre geçerliliğini kontrol eden metod
     private boolean isPasswordValid(String password) {
-        // Şifrenin 8 karakterden uzun olup olmadığını kontrol et
         if (password.length() < 8) {
             return false;
         }
-
-        // En az bir harf, bir rakam ve bir özel karakter içermesi gerekmekte
         String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[.,@#$!%*?&])[A-Za-z\\d.,@#$!%*?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);
-
         return matcher.matches();
     }
 }
